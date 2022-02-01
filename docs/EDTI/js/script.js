@@ -11,6 +11,7 @@ async function selectPodcast(id) {
     let prompt;
     if ((prompt = document.querySelector("#select-prompt")) !== null) prompt.remove();
 
+    document.querySelector("#podcast-table").innerHTML = ``;
     document.querySelector("#loader").innerHTML = `<div class="spinner-border" style="margin-top: 30vh;" role="status" id="center-spinner"></div>`;
 
     switch (selectedPodcast) {
