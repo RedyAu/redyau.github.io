@@ -39,7 +39,7 @@ class Board extends React.Component {
     }
 
     return (
-      <div className="board-itself">
+      <div className="board">
         {boardElements}
       </div>
     );
@@ -55,7 +55,7 @@ class Game extends React.Component {
       }],
       xIsNext: true,
       stepNumber: 0,
-      boardSize: null,
+      boardSize: null, //TODO change back to null
       boardSizePre: 3
     };
   }
@@ -114,26 +114,28 @@ class Game extends React.Component {
       this.state.boardSize
         ?
         <div className="game">
-          <div className="game-board">
-            <div>
+          <div className="board-parent">
+            <div className="game-board">
               <Board
                 squares={current.squares}
                 onClick={(i) => this.handleClick(i)}
                 boardSize={this.state.boardSize}
               />
+            </div>
+          </div>
+          <div>
+            <div className="game-info">
+              {status}
               <div>
-                <button onClick={() => {window.location.reload()}}>
-                  New Board
-                </button>
+              <button onClick={() => { window.location.reload() }}>
+                New Board
+              </button>
               </div>
             </div>
           </div>
           <div className="game-info">
-            <div>{status}</div>
-            <p>
-              Moves:
-            </p>
-            <ul>{moveElements}</ul>
+            Moves:
+            {moveElements}
           </div>
         </div>
         :
@@ -160,6 +162,11 @@ ReactDOM.render(
 );
 
 function calculateWinner(squares, boardSize) {
+  // eslint-disable-next-line eqeqeq
+  if (boardSize == undefined) return;
+  // eslint-disable-next-line eqeqeq
+  if (squares == undefined) return;
+
   let winPossibilities = [];
   let current = [];
 
@@ -167,31 +174,41 @@ function calculateWinner(squares, boardSize) {
   let k = 0;
   for (let i = 0; i < boardSize; i++) {
     for (let j = 0; j < boardSize; j++) {
-      current.push((k + j));
-      console.log("j"+j+",k"+k);
+      current.push(j + k);
     }
-    console.log(i);
-    k += boardSize;
-    winPossibilities.push(current);
+    k -= -(boardSize);
+    winPossibilities.push([current]);
+    current = [];
   }
 
   //! Columns
   for (let i = 0; i < boardSize; i++) {
     k = 0;
-    for (let j; j < boardSize; j++) {
-      current.push((k + i));
-      k += boardSize;
+    for (let j = 0; j < boardSize; j++) {
+      current.push((i + k));
+      k -= -(boardSize);
     }
-    winPossibilities.push(current);
+    winPossibilities.push([current]);
+    current = [];
   }
 
-  console.log(winPossibilities);
+  let won = null;
 
   for (let i = 0; i < winPossibilities.length; i++) {
-    const [a, b, c] = winPossibilities[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+    for (let j = 0; j < winPossibilities[i].length; j++) {
+      const p = winPossibilities[i][j];
+
+      let _didWin = true;
+
+      let player = squares[p[0]];
+      for (let j = 0; j < p.length; j++) {
+        // eslint-disable-next-line eqeqeq
+        _didWin = ((squares[p[j]] === player) && (player != undefined)) && _didWin;
+      }
+      won = _didWin ? player : null;
     }
+
+    if (won !== null) return won;
   }
   return null;
 }
