@@ -8,5 +8,5 @@ Egy másik fejlesztőcsapat a Filc forráskódját alapul véve létrehozta a Re
 
 # [Tovább a ReFilchez -> refilc.hu](https://refilc.hu/)
 
-A néhai Filc Napló csapata nevében
+A néhai Filc Napló csapata nevében\
 RedyAu
