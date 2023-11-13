@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>RefLabs Énekeskönyv</title>
-    <html lang="hu" />
+  <meta charset="UTF-8">
+  <title>RefLabs Énekeskönyv</title>
+  <html lang="hu" />
 </head>
 
 <body style="background-color: #222222">
   <h2 style="font-family: sans-serif; color: white;">App megnyitása...</h2>
-    <script>
-      setTimeout(() => {
-        let location = window.location;
-        location.host = "reflabs.hu";
-        location.pathname = "/"
-        window.location.replace(location);
-      }, 1000);
-    </script>
+  <script>
+    setTimeout(() => {
+      const newLocation = "https://reflabs.hu" + window.location.search;
+      window.location.replace(newLocation);
+    }, 1000);
+  </script>
 </body>
