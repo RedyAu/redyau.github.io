@@ -1,6 +1,0 @@
----
-title: Kútklíma
-tags: hu hardware
----
-## Hamarosan...
-[Addig is nyisd meg a pdf-et](/blog/kutklima.pdf)
