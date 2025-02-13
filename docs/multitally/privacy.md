@@ -1,4 +1,7 @@
-# MultiTally Privacy Policy
+---
+title: MultiTally Privacy Policy
+layout: base
+---
 
 MultiTally does not collect any data, it only communicates trough your local network with your video switcher.
 

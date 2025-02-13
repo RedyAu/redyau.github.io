@@ -1,4 +1,7 @@
-# OpenSong
+---
+title: OpenSong Linkgyűjtemény
+layout: post
+---
 ## Gyülekezeti énekvetítés - linkgyűjtemény
 
 ### Program

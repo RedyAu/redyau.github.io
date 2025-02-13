@@ -4,3 +4,9 @@ minima:
   skin: solarized-dark
 disqus:
   shortname: redyau
+defaults:
+  -
+    scope:
+      path: "blog"
+    values:
+      layout: "post"
