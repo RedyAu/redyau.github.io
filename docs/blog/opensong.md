@@ -1,6 +1,6 @@
 ---
 title: OpenSong Linkgyűjtemény
-layout: post
+tags: hu worship opensong tutorial
 ---
 ## Gyülekezeti énekvetítés - linkgyűjtemény
 
@@ -13,6 +13,15 @@ A 2.2.7-es verzió letöltését javaslom stabilitás miatt.\
 
 2000+ éneket tartalmazó kottatár letölthető innen:\
 **[Letöltés](https://github.com/reformatus/OpenSong/archive/refs/heads/master.zip)**
+
+### Telepítés
+
+- Telepítőt futtatni alapértelmezett beállításokkal. Magyar nyelv kiválasztható telepítésre.
+- Első induláskor kiválasztani a fő adattár mappát (Javasolt az alapértelmezett Dokumentumok/OpenSong-ot meghagyni)
+- Tárat letölteni, OpenSongot bezárni
+- Tár/Songs másolása Dokumentumok/OpenSong/Songs mappába (angol példa énekek törölhetők)
+- Tár/Scriptures másolása Program Files (x86)/OpenSong/OpenSong Scripture mappába
+- Ezután indítható az OpenSong, ami ha minden jól megy, megtalálja az énekeket és bibliákat.
 
 ### Útmutató videók
 

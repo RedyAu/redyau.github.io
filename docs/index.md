@@ -2,6 +2,9 @@
 title: Fodor Benedek
 layout: home
 ---
-# This is a test
+### Hello there 👋
 
-![or is it](https://c.tenor.com/qkztHZ9Hu48AAAAC/tenor.gif)
+Check out these links:
+
+- [Posts](/blog)
+- [GitHub](/l/gh)
