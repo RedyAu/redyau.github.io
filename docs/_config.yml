@@ -1,5 +1,5 @@
 remote_theme: jekyll/minima
 minima:
-  skin: solarized
+  skin: solarized-dark
 disqus:
   shortname: redyau
