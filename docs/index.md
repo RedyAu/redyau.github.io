@@ -4,7 +4,9 @@ layout: home
 ---
 ### Hello there 👋
 
-Check out these links:
+I'll be adding more stuff to this website soon!
+In the meantime, check out these links:
 
-- [Posts](/blog)
 - [GitHub](/l/gh)
+
+Why not check out my posts:
