@@ -1,0 +1,1665 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Filelist Tree Browser</title>
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #101833;
+        --panel-2: #0e1630;
+        --text: #e7ecff;
+        --muted: #aeb8e6;
+        --faint: #7e89bf;
+        --accent: #7aa2ff;
+        --accent-2: #5eead4;
+        --danger: #ff6b6b;
+        --border: rgba(231, 236, 255, 0.12);
+        --shadow: rgba(0, 0, 0, 0.25);
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        color: var(--text);
+        background: radial-gradient(
+            1200px 900px at 10% 10%,
+            rgba(122, 162, 255, 0.15),
+            transparent 65%
+          ),
+          radial-gradient(
+            900px 700px at 90% 20%,
+            rgba(94, 234, 212, 0.12),
+            transparent 60%
+          ),
+          var(--bg);
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 16px;
+        background: linear-gradient(
+          180deg,
+          rgba(16, 24, 51, 0.85),
+          rgba(16, 24, 51, 0.6)
+        );
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 8px 30px var(--shadow);
+        backdrop-filter: blur(8px);
+      }
+
+      header h1 {
+        font-size: 16px;
+        margin: 0;
+        letter-spacing: 0.2px;
+      }
+
+      header .sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .row {
+        display: flex;
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(16, 24, 51, 0.85),
+          rgba(16, 24, 51, 0.55)
+        );
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 8px 30px var(--shadow);
+        backdrop-filter: blur(8px);
+      }
+
+      .landing {
+        padding: 18px;
+      }
+
+      .landing p {
+        color: var(--muted);
+        margin: 8px 0 0;
+        line-height: 1.45;
+      }
+
+      .drop {
+        margin-top: 14px;
+        padding: 18px;
+        border: 1px dashed rgba(231, 236, 255, 0.28);
+        border-radius: 12px;
+        background: rgba(14, 22, 48, 0.65);
+        display: grid;
+        place-items: center;
+        text-align: center;
+        gap: 10px;
+        transition: border-color 120ms ease, background 120ms ease;
+      }
+
+      .drop.dragover {
+        border-color: rgba(122, 162, 255, 0.8);
+        background: rgba(122, 162, 255, 0.12);
+      }
+
+      .drop strong {
+        font-size: 14px;
+      }
+
+      .drop .small {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .btns {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      button,
+      .btn {
+        appearance: none;
+        border: 1px solid rgba(231, 236, 255, 0.16);
+        background: rgba(14, 22, 48, 0.9);
+        color: var(--text);
+        padding: 9px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: transform 120ms ease, border-color 120ms ease,
+          background 120ms ease;
+      }
+
+      button:hover,
+      .btn:hover {
+        border-color: rgba(122, 162, 255, 0.55);
+        background: rgba(16, 24, 51, 0.95);
+      }
+
+      button:active,
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      button.primary {
+        border-color: rgba(122, 162, 255, 0.55);
+        background: rgba(122, 162, 255, 0.18);
+      }
+
+      button.danger {
+        border-color: rgba(255, 107, 107, 0.55);
+        background: rgba(255, 107, 107, 0.12);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .progress {
+        margin-top: 14px;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(231, 236, 255, 0.12);
+        background: rgba(14, 22, 48, 0.65);
+      }
+
+      .progress .bar {
+        height: 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(231, 236, 255, 0.14);
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        margin-top: 8px;
+      }
+
+      .progress .bar > div {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          rgba(122, 162, 255, 0.9),
+          rgba(94, 234, 212, 0.9)
+        );
+        border-radius: 999px;
+        transition: width 100ms linear;
+      }
+
+      .main {
+        height: calc(100vh - 140px);
+        min-height: 560px;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 0;
+      }
+
+      @media (max-width: 980px) {
+        .main {
+          grid-template-columns: 1fr;
+          height: auto;
+          min-height: 0;
+        }
+      }
+
+      .pane {
+        padding: 14px;
+        overflow: hidden;
+      }
+
+      .pane + .pane {
+        border-left: 1px solid var(--border);
+      }
+
+      @media (max-width: 980px) {
+        .pane + .pane {
+          border-left: none;
+          border-top: 1px solid var(--border);
+        }
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .toolbar .left,
+      .toolbar .right {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .chip {
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(231, 236, 255, 0.14);
+        background: rgba(14, 22, 48, 0.65);
+        color: var(--muted);
+      }
+
+      .input {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        border: 1px solid rgba(231, 236, 255, 0.14);
+        background: rgba(14, 22, 48, 0.65);
+        border-radius: 10px;
+        padding: 8px 10px;
+      }
+
+      .input input {
+        width: min(460px, 70vw);
+        border: none;
+        outline: none;
+        background: transparent;
+        color: var(--text);
+        font-size: 13px;
+      }
+
+      .input label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+      .faint {
+        color: var(--faint);
+      }
+
+      .tree {
+        overflow: auto;
+        height: calc(100% - 52px);
+        padding-right: 6px;
+      }
+
+      .node {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 8px;
+        border-radius: 10px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .node:hover {
+        background: rgba(122, 162, 255, 0.1);
+      }
+
+      .node.selected {
+        background: rgba(122, 162, 255, 0.18);
+        border: 1px solid rgba(122, 162, 255, 0.22);
+      }
+
+      .node .name {
+        font-family: var(--mono);
+        font-size: 12px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .node .meta {
+        font-size: 11px;
+        color: var(--muted);
+        margin-left: auto;
+        white-space: nowrap;
+      }
+
+      .toggle {
+        width: 18px;
+        height: 18px;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 6px;
+        border: 1px solid rgba(231, 236, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        flex: 0 0 auto;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 6px;
+        border: 1px solid rgba(231, 236, 255, 0.12);
+        background: rgba(255, 255, 255, 0.04);
+        flex: 0 0 auto;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .children {
+        margin-left: 18px;
+        padding-left: 10px;
+        border-left: 1px solid rgba(231, 236, 255, 0.1);
+      }
+
+      .more {
+        margin: 6px 0 10px 36px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .details {
+        overflow: auto;
+        height: calc(100% - 52px);
+        padding-right: 6px;
+      }
+
+      .kv {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 8px 10px;
+        font-size: 13px;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(231, 236, 255, 0.12);
+        background: rgba(14, 22, 48, 0.65);
+      }
+
+      .kv .k {
+        color: var(--muted);
+      }
+
+      .kv .v {
+        font-family: var(--mono);
+        overflow-wrap: anywhere;
+      }
+
+      .results {
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(231, 236, 255, 0.12);
+        background: rgba(14, 22, 48, 0.65);
+      }
+
+      .results h3 {
+        margin: 0 0 10px;
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .result {
+        padding: 6px 8px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: var(--mono);
+        font-size: 12px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .result:hover {
+        background: rgba(122, 162, 255, 0.1);
+      }
+
+      .warn {
+        color: var(--danger);
+      }
+
+      .footer-note {
+        margin-top: 10px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .small {
+        font-size: 12px;
+      }
+
+      .kbd {
+        font-family: var(--mono);
+        font-size: 12px;
+        padding: 2px 6px;
+        border: 1px solid rgba(231, 236, 255, 0.14);
+        border-bottom-color: rgba(231, 236, 255, 0.22);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <h1>Filelist Tree Browser (static)</h1>
+          <div class="sub">
+            Drop a file list (e.g. <span class="kbd">tar -tf</span> or
+            <span class="kbd">tar -tvf</span>) and browse it locally.
+          </div>
+        </div>
+        <div class="btns">
+          <button id="btnReset" class="danger hidden">Reset</button>
+          <button id="btnDemo" title="Load a small built-in demo list">
+            Load demo
+          </button>
+        </div>
+      </header>
+
+      <div id="landing" class="card landing">
+        <strong>Workflow</strong>
+        <p>
+          1) Generate a file list (best: <span class="kbd">tar -tf</span>).
+          2) Download the list to your machine. 3) Drag-and-drop it here.
+        </p>
+
+        <div id="drop" class="drop" tabindex="0">
+          <strong>Drag & drop your filelist file here</strong>
+          <div class="small">
+            Or use the file picker. Nothing is uploaded; parsing happens in your
+            browser.
+          </div>
+          <div class="btns">
+            <label class="btn primary" for="fileInput">Choose file…</label>
+            <input id="fileInput" type="file" class="hidden" />
+          </div>
+        </div>
+
+        <div id="progress" class="progress hidden">
+          <div id="progressText" class="small muted">Preparing…</div>
+          <div class="bar"><div id="progressBar"></div></div>
+          <div class="footer-note">
+            For very large lists, parsing can take a while. Keep this tab open.
+          </div>
+        </div>
+
+        <div class="footer-note">
+          Tips:
+          <ul>
+            <li>
+              Best input format:
+              <span class="kbd">tar --use-compress-program=zstd -tf …</span>
+            </li>
+            <li>
+              If you used <span class="kbd">tar -tvf</span>, the app will try to
+              parse mode/owner/size/time.
+            </li>
+            <li>
+              Very large trees can’t be fully rendered at once; folders expand
+              lazily.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="app" class="card main hidden" aria-live="polite">
+        <div class="pane">
+          <div class="toolbar">
+            <div class="left">
+              <div class="input" title="Search the index (limited results)">
+                <label for="q">Find</label>
+                <input
+                  id="q"
+                  type="text"
+                  placeholder="substring match (e.g. etc/ssh, passwd, .service)"
+                  autocomplete="off"
+                />
+              </div>
+              <button id="btnFind" class="primary">Find</button>
+              <button id="btnStopFind">Stop</button>
+            </div>
+            <div class="right">
+              <span id="chipStats" class="chip">No data</span>
+            </div>
+          </div>
+
+          <div id="tree" class="tree" role="tree"></div>
+
+          <div id="results" class="results hidden">
+            <h3>
+              Results (limited). Click to reveal in tree.
+              <span id="resultsMeta" class="faint"></span>
+            </h3>
+            <div id="resultsList"></div>
+          </div>
+        </div>
+
+        <div class="pane">
+          <div class="toolbar">
+            <div class="left">
+              <span class="chip">Selection</span>
+            </div>
+            <div class="right">
+              <button id="btnCollapseAll" title="Collapse all folders">
+                Collapse all
+              </button>
+            </div>
+          </div>
+
+          <div class="details">
+            <div id="selection" class="kv">
+              <div class="k">Status</div>
+              <div class="v">No item selected.</div>
+
+              <div class="k">Hint</div>
+              <div class="v">
+                Use <span class="kbd">Find</span>, then click a result to reveal
+                it.
+              </div>
+            </div>
+
+            <div class="footer-note">
+              Notes:
+              <ul>
+                <li>
+                  Many list formats don’t include metadata; in that case size,
+                  owner, etc. will be blank.
+                </li>
+                <li>
+                  If your list is huge, prefer searching rather than manually
+                  expanding deep folders.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        You can host this single HTML file on GitHub Pages. No build step, no
+        dependencies.
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        "use strict";
+
+        /**
+         * Data model
+         *
+         * DirNode:
+         *  - name: string
+         *  - children: Map<string, DirNode>
+         *  - files: FileEntry[] (only direct children)
+         *  - meta: optional metadata if an explicit dir entry existed
+         *  - ui: rendering state
+         *
+         * FileEntry:
+         *  - name: string
+         *  - path: string (full normalized path)
+         *  - meta: optional metadata (mode/owner/group/size/mtime/linkTarget)
+         */
+        function makeDirNode(name) {
+          return {
+            name,
+            children: new Map(),
+            files: [],
+            meta: null,
+            ui: {
+              expanded: false,
+              rendered: false,
+              fileRenderLimit: 400,
+              dirRenderLimit: 400,
+              containerEl: null,
+              nodeEl: null,
+              childrenEl: null,
+              moreEl: null,
+            },
+          };
+        }
+
+        const state = {
+          root: makeDirNode(""),
+          stats: {
+            lines: 0,
+            parsed: 0,
+            skipped: 0,
+            files: 0,
+            dirs: 0,
+            withMeta: 0,
+            totalSize: 0,
+            sizeKnownCount: 0,
+            formatGuess: "unknown",
+          },
+          selected: null, // {type:'dir'|'file', path, node/file, meta}
+          parsing: false,
+          stopFind: false,
+          lastFileName: null,
+        };
+
+        // DOM
+        const $ = (id) => document.getElementById(id);
+
+        const landing = $("landing");
+        const app = $("app");
+        const drop = $("drop");
+        const fileInput = $("fileInput");
+        const progress = $("progress");
+        const progressText = $("progressText");
+        const progressBar = $("progressBar");
+
+        const btnReset = $("btnReset");
+        const btnDemo = $("btnDemo");
+
+        const chipStats = $("chipStats");
+        const treeEl = $("tree");
+
+        const q = $("q");
+        const btnFind = $("btnFind");
+        const btnStopFind = $("btnStopFind");
+        const results = $("results");
+        const resultsMeta = $("resultsMeta");
+        const resultsList = $("resultsList");
+
+        const selectionEl = $("selection");
+        const btnCollapseAll = $("btnCollapseAll");
+
+        // Utilities
+        const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+
+        function fmtBytes(n) {
+          if (!Number.isFinite(n)) return "";
+          const units = ["B", "KB", "MB", "GB", "TB"];
+          let i = 0;
+          let x = n;
+          while (x >= 1024 && i < units.length - 1) {
+            x /= 1024;
+            i++;
+          }
+          const dp = i === 0 ? 0 : i <= 2 ? 1 : 2;
+          return `${x.toFixed(dp)} ${units[i]}`;
+        }
+
+        function escHtml(s) {
+          return s
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#39;");
+        }
+
+        function normalizePath(p) {
+          if (!p) return "";
+          let s = p.trim();
+          if (!s) return "";
+
+          // Drop leading metadata separators if present
+          // (Some formats might prefix like "./")
+          if (s.startsWith("./")) s = s.slice(2);
+
+          // Remove leading slashes for consistent tree root
+          s = s.replace(/^\/+/, "");
+
+          // Normalize repeated slashes
+          s = s.replace(/\/{2,}/g, "/");
+
+          // Strip trailing carriage return
+          s = s.replace(/\r$/, "");
+
+          // Ignore current dir
+          if (s === "." || s === "./") return "";
+
+          return s;
+        }
+
+        function isModeToken(tok) {
+          // Matches common `ls -l` / `tar -tv` style modes
+          // -rw-r--r--, drwxr-xr-x, lrwxrwxrwx, etc.
+          return /^[\-dclpsb][rwxstST\-]{9,}$/.test(tok);
+        }
+
+        function looksLikeTarTvOrLsLong(line) {
+          const s = line.trim();
+          if (!s) return false;
+          if (s.startsWith("total ")) return false;
+          const first = s.split(/\s+/)[0];
+          return isModeToken(first);
+        }
+
+        function looksLikeFindLs(line) {
+          // Rough detection for `find -ls` output:
+          // inode blocks mode links user group size month day time/year path
+          const s = line.trim();
+          if (!s) return false;
+          const parts = s.split(/\s+/);
+          if (parts.length < 10) return false;
+          if (!/^\d+$/.test(parts[0])) return false; // inode
+          if (!/^\d+$/.test(parts[1])) return false; // blocks
+          return isModeToken(parts[2]);
+        }
+
+        function parseTarTvOrLsLong(line) {
+          // Heuristic parsing for:
+          //  - tar -tvf:  mode owner/group size date time name...
+          //  - ls -l:     mode links owner group size month day time/year name...
+          //
+          // We detect size token as the first purely-numeric token after mode
+          // within a reasonable window, then assume next tokens form date/time,
+          // and remainder is path (may contain spaces).
+          const s = line.trim();
+          const parts = s.split(/\s+/);
+          if (parts.length < 6) return null;
+
+          const mode = parts[0];
+          let sizeIdx = -1;
+
+          // Find first numeric token after mode, within first 8 tokens.
+          for (let i = 1; i < Math.min(parts.length, 10); i++) {
+            if (/^\d+$/.test(parts[i])) {
+              sizeIdx = i;
+              break;
+            }
+          }
+          if (sizeIdx === -1 || sizeIdx + 2 >= parts.length) return null;
+
+          // owner/group is somewhere between mode and sizeIdx
+          const ownerGroup = parts.slice(1, sizeIdx).join(" ");
+
+          const size = Number(parts[sizeIdx]);
+          const dateTok = parts[sizeIdx + 1];
+          const timeTok = parts[sizeIdx + 2];
+
+          const nameParts = parts.slice(sizeIdx + 3);
+          let name = nameParts.join(" ");
+          if (!name) return null;
+
+          // Handle symlink target: "name -> target"
+          let linkTarget = null;
+          const arrow = name.indexOf(" -> ");
+          if (arrow !== -1) {
+            linkTarget = name.slice(arrow + 4);
+            name = name.slice(0, arrow);
+          }
+
+          const meta = {
+            mode,
+            ownerGroup: ownerGroup || null,
+            size: Number.isFinite(size) ? size : null,
+            mtime: `${dateTok} ${timeTok}`,
+            linkTarget,
+            source: "long",
+          };
+
+          let path = normalizePath(name);
+          if (!path) return null;
+
+          const isDir = mode.startsWith("d") || path.endsWith("/");
+          if (path.endsWith("/")) path = path.slice(0, -1);
+
+          return { path, meta, isDir };
+        }
+
+        function parseFindLs(line) {
+          // find -ls format:
+          // inode blocks mode links user group size month day time/year path...
+          const s = line.trim();
+          const parts = s.split(/\s+/);
+          if (parts.length < 11) return null;
+          const mode = parts[2];
+
+          const user = parts[4] ?? "";
+          const group = parts[5] ?? "";
+          const size = Number(parts[6]);
+
+          const month = parts[7];
+          const day = parts[8];
+          const timeOrYear = parts[9];
+
+          const name = parts.slice(10).join(" ");
+          let path = normalizePath(name);
+          if (!path) return null;
+
+          let linkTarget = null;
+          const arrow = path.indexOf(" -> ");
+          if (arrow !== -1) {
+            linkTarget = path.slice(arrow + 4);
+            path = path.slice(0, arrow);
+          }
+
+          const meta = {
+            mode,
+            ownerGroup: `${user} ${group}`.trim() || null,
+            size: Number.isFinite(size) ? size : null,
+            mtime: `${month} ${day} ${timeOrYear}`,
+            linkTarget,
+            source: "find-ls",
+          };
+
+          const isDir = mode.startsWith("d") || path.endsWith("/");
+          if (path.endsWith("/")) path = path.slice(0, -1);
+
+          return { path, meta, isDir };
+        }
+
+        function parseLine(line) {
+          state.stats.lines++;
+          const raw = line;
+          const s = raw.trim();
+          if (!s) {
+            state.stats.skipped++;
+            return;
+          }
+          if (s === "." || s === "./") {
+            state.stats.skipped++;
+            return;
+          }
+          if (s.startsWith("total ")) {
+            state.stats.skipped++;
+            return;
+          }
+
+          let parsed = null;
+
+          if (looksLikeFindLs(s)) {
+            parsed = parseFindLs(s);
+            if (parsed && state.stats.formatGuess === "unknown") {
+              state.stats.formatGuess = "find -ls";
+            }
+          } else if (looksLikeTarTvOrLsLong(s)) {
+            parsed = parseTarTvOrLsLong(s);
+            if (parsed && state.stats.formatGuess === "unknown") {
+              state.stats.formatGuess = "tar -tvf / ls -l";
+            }
+          } else {
+            // Assume plain path list: tar -tf, find, etc.
+            let path = normalizePath(s);
+            if (!path) {
+              state.stats.skipped++;
+              return;
+            }
+            const isDir = path.endsWith("/");
+            if (path.endsWith("/")) path = path.slice(0, -1);
+            parsed = { path, meta: null, isDir };
+            if (state.stats.formatGuess === "unknown") {
+              state.stats.formatGuess = "paths (tar -tf / find)";
+            }
+          }
+
+          if (!parsed || !parsed.path) {
+            state.stats.skipped++;
+            return;
+          }
+
+          state.stats.parsed++;
+          addPathToTree(parsed.path, parsed.isDir, parsed.meta);
+        }
+
+        function addPathToTree(path, isDir, meta) {
+          const parts = path.split("/").filter(Boolean);
+          if (parts.length === 0) return;
+
+          let node = state.root;
+
+          // Create directory nodes along the path.
+          for (let i = 0; i < parts.length - (isDir ? 0 : 1); i++) {
+            const dirName = parts[i];
+            let child = node.children.get(dirName);
+            if (!child) {
+              child = makeDirNode(dirName);
+              node.children.set(dirName, child);
+              state.stats.dirs++;
+            }
+            node = child;
+          }
+
+          if (isDir) {
+            // Explicit directory entry; store meta if present.
+            if (meta) {
+              node.meta = node.meta || meta;
+              state.stats.withMeta++;
+              if (meta.size != null) {
+                state.stats.totalSize += meta.size;
+                state.stats.sizeKnownCount++;
+              }
+            }
+            return;
+          }
+
+          const fileName = parts[parts.length - 1];
+          const fullPath = parts.join("/");
+
+          // Basic dedupe: if the same filename appears twice in the same dir,
+          // keep the last metadata we see.
+          const existingIdx = node.files.findIndex((f) => f.name === fileName);
+          const entry = { name: fileName, path: fullPath, meta: meta || null };
+
+          if (existingIdx !== -1) {
+            node.files[existingIdx] = entry;
+          } else {
+            node.files.push(entry);
+            state.stats.files++;
+          }
+
+          if (meta) {
+            state.stats.withMeta++;
+            if (meta.size != null) {
+              state.stats.totalSize += meta.size;
+              state.stats.sizeKnownCount++;
+            }
+          }
+        }
+
+        function updateStatsChip() {
+          const st = state.stats;
+          const sizeStr =
+            st.sizeKnownCount > 0
+              ? `, size~${fmtBytes(st.totalSize)}`
+              : "";
+          chipStats.textContent = `${st.files.toLocaleString()} files, ${st.dirs.toLocaleString()} dirs${sizeStr} • ${st.formatGuess}`;
+        }
+
+        function showProgress(text, pct) {
+          progress.classList.remove("hidden");
+          progressText.textContent = text;
+          progressBar.style.width = `${clamp(pct, 0, 100).toFixed(1)}%`;
+        }
+
+        function hideProgress() {
+          progress.classList.add("hidden");
+          progressBar.style.width = "0%";
+        }
+
+        function resetAll() {
+          state.root = makeDirNode("");
+          state.stats = {
+            lines: 0,
+            parsed: 0,
+            skipped: 0,
+            files: 0,
+            dirs: 0,
+            withMeta: 0,
+            totalSize: 0,
+            sizeKnownCount: 0,
+            formatGuess: "unknown",
+          };
+          state.selected = null;
+          state.parsing = false;
+          state.stopFind = false;
+          state.lastFileName = null;
+
+          treeEl.innerHTML = "";
+          results.classList.add("hidden");
+          resultsList.innerHTML = "";
+          resultsMeta.textContent = "";
+          q.value = "";
+
+          selectionEl.innerHTML = `
+            <div class="k">Status</div>
+            <div class="v">No item selected.</div>
+
+            <div class="k">Hint</div>
+            <div class="v">
+              Use <span class="kbd">Find</span>, then click a result to reveal it.
+            </div>
+          `;
+
+          chipStats.textContent = "No data";
+
+          landing.classList.remove("hidden");
+          app.classList.add("hidden");
+          btnReset.classList.add("hidden");
+        }
+
+        function switchToApp() {
+          landing.classList.add("hidden");
+          app.classList.remove("hidden");
+          btnReset.classList.remove("hidden");
+        }
+
+        async function parseFile(file) {
+          resetAll();
+          state.parsing = true;
+          state.lastFileName = file.name;
+
+          showProgress(`Reading ${file.name}…`, 0);
+
+          // Chunked line reader to keep the UI responsive on big files.
+          const chunkSize = 2 * 1024 * 1024; // 2MB
+          const decoder = new TextDecoder("utf-8");
+          let offset = 0;
+          let carry = "";
+          let lastYield = performance.now();
+
+          while (offset < file.size) {
+            const slice = file.slice(offset, offset + chunkSize);
+            const buf = await slice.arrayBuffer();
+            const text = decoder.decode(buf, { stream: true });
+            const combined = carry + text;
+            const lines = combined.split(/\r?\n/);
+            carry = lines.pop() ?? "";
+
+            for (const line of lines) {
+              parseLine(line);
+
+              // Yield to event loop periodically.
+              const now = performance.now();
+              if (now - lastYield > 20) {
+                lastYield = now;
+                await new Promise((r) => setTimeout(r, 0));
+              }
+            }
+
+            offset += chunkSize;
+            const pct = (offset / file.size) * 100;
+            showProgress(
+              `Parsing… ${state.stats.parsed.toLocaleString()} entries (read ${pct.toFixed(
+                1
+              )}%)`,
+              pct
+            );
+          }
+
+          // Flush remaining
+          const tail = carry + decoder.decode();
+          if (tail.trim()) {
+            for (const line of tail.split(/\r?\n/)) parseLine(line);
+          }
+
+          state.parsing = false;
+          hideProgress();
+          switchToApp();
+          updateStatsChip();
+          renderRoot();
+
+          // Helpful initial selection: root
+          selectDir(state.root, "");
+        }
+
+        // Rendering (lazy)
+        function renderRoot() {
+          treeEl.innerHTML = "";
+          // Render top-level directories and files (if any)
+          const rootContainer = document.createElement("div");
+          treeEl.appendChild(rootContainer);
+          renderDirInto(state.root, rootContainer, 0, "");
+          state.root.ui.expanded = true;
+          state.root.ui.rendered = true;
+        }
+
+        function dirDisplayMeta(dirNode) {
+          // If we have explicit meta: show e.g. date/time
+          if (!dirNode.meta) return "";
+          const m = dirNode.meta;
+          const size = m.size != null ? fmtBytes(m.size) : "";
+          const time = m.mtime ?? "";
+          const og = m.ownerGroup ?? "";
+          return [size, time, og].filter(Boolean).join(" • ");
+        }
+
+        function fileDisplayMeta(fileEntry) {
+          const m = fileEntry.meta;
+          if (!m) return "";
+          const size = m.size != null ? fmtBytes(m.size) : "";
+          const time = m.mtime ?? "";
+          return [size, time].filter(Boolean).join(" • ");
+        }
+
+        function renderDirInto(dirNode, parentEl, depth, parentPath) {
+          const path =
+            parentPath === ""
+              ? dirNode.name
+              : dirNode.name
+                ? `${parentPath}/${dirNode.name}`
+                : parentPath;
+
+          const wrapper = document.createElement("div");
+          parentEl.appendChild(wrapper);
+
+          // Root node doesn't render its own row (we render its children)
+          if (dirNode !== state.root) {
+            const row = document.createElement("div");
+            row.className = "node";
+            row.setAttribute("role", "treeitem");
+            row.setAttribute("aria-expanded", String(dirNode.ui.expanded));
+
+            const toggle = document.createElement("div");
+            toggle.className = "toggle";
+            toggle.textContent = dirNode.ui.expanded ? "▾" : "▸";
+            toggle.title = "Expand/collapse";
+
+            const icon = document.createElement("div");
+            icon.className = "icon";
+            icon.textContent = "d";
+
+            const name = document.createElement("div");
+            name.className = "name";
+            name.textContent = dirNode.name;
+
+            const meta = document.createElement("div");
+            meta.className = "meta";
+            meta.textContent = dirDisplayMeta(dirNode);
+
+            row.appendChild(toggle);
+            row.appendChild(icon);
+            row.appendChild(name);
+            row.appendChild(meta);
+
+            // Click handling
+            toggle.addEventListener("click", (e) => {
+              e.stopPropagation();
+              toggleDir(dirNode, row, children, path);
+            });
+
+            row.addEventListener("click", () => {
+              selectDir(dirNode, path);
+            });
+
+            dirNode.ui.nodeEl = row;
+            wrapper.appendChild(row);
+
+            var children = document.createElement("div");
+            children.className = "children";
+            children.classList.toggle("hidden", !dirNode.ui.expanded);
+            wrapper.appendChild(children);
+            dirNode.ui.childrenEl = children;
+          } else {
+            // Root children container
+            var children = wrapper;
+          }
+
+          // If expanded, render children now.
+          if (dirNode.ui.expanded) {
+            renderDirChildren(dirNode, children, path);
+          }
+
+          dirNode.ui.containerEl = wrapper;
+        }
+
+        function renderDirChildren(dirNode, childrenEl, dirPath) {
+          if (dirNode.ui.rendered) return;
+
+          // Sort directories and files for stable display
+          const dirs = Array.from(dirNode.children.values()).sort((a, b) =>
+            a.name.localeCompare(b.name)
+          );
+          const files = dirNode.files
+            .slice()
+            .sort((a, b) => a.name.localeCompare(b.name));
+
+          const dirLimit = dirNode.ui.dirRenderLimit;
+          const fileLimit = dirNode.ui.fileRenderLimit;
+
+          // Render dirs (limited)
+          const dirsToShow = dirs.slice(0, dirLimit);
+          for (const d of dirsToShow) {
+            // Default collapsed to avoid huge DOM
+            d.ui.expanded = false;
+            d.ui.rendered = false;
+            renderDirInto(d, childrenEl, 0, dirPath);
+          }
+
+          // Render files (limited)
+          const filesToShow = files.slice(0, fileLimit);
+          for (const f of filesToShow) {
+            const row = document.createElement("div");
+            row.className = "node";
+            row.setAttribute("role", "treeitem");
+
+            const spacer = document.createElement("div");
+            spacer.className = "toggle";
+            spacer.textContent = " ";
+
+            const icon = document.createElement("div");
+            icon.className = "icon";
+            icon.textContent = "f";
+
+            const name = document.createElement("div");
+            name.className = "name";
+            name.textContent = f.name;
+
+            const meta = document.createElement("div");
+            meta.className = "meta";
+            meta.textContent = fileDisplayMeta(f);
+
+            row.appendChild(spacer);
+            row.appendChild(icon);
+            row.appendChild(name);
+            row.appendChild(meta);
+
+            row.addEventListener("click", () => {
+              selectFile(f);
+            });
+
+            childrenEl.appendChild(row);
+          }
+
+          // Add "Show more" if needed
+          const moreNeeded = dirs.length > dirLimit || files.length > fileLimit;
+          if (moreNeeded) {
+            const more = document.createElement("div");
+            more.className = "more";
+            const moreDirs =
+              dirs.length > dirLimit
+                ? `${(dirs.length - dirLimit).toLocaleString()} dirs hidden`
+                : null;
+            const moreFiles =
+              files.length > fileLimit
+                ? `${(files.length - fileLimit).toLocaleString()} files hidden`
+                : null;
+
+            more.innerHTML = `
+              <div class="muted small">
+                Large folder: ${[moreDirs, moreFiles].filter(Boolean).join(
+                  ", "
+                )}.
+              </div>
+              <div class="btns" style="justify-content:flex-start;margin-top:6px">
+                <button class="primary">Show more</button>
+              </div>
+            `;
+
+            const btn = more.querySelector("button");
+            btn.addEventListener("click", () => {
+              // Increase limits and rerender by rebuilding this folder’s children.
+              dirNode.ui.dirRenderLimit = Math.min(
+                dirs.length,
+                dirNode.ui.dirRenderLimit * 2
+              );
+              dirNode.ui.fileRenderLimit = Math.min(
+                files.length,
+                dirNode.ui.fileRenderLimit * 2
+              );
+              dirNode.ui.rendered = false;
+              childrenEl.innerHTML = "";
+              renderDirChildren(dirNode, childrenEl, dirPath);
+            });
+
+            childrenEl.appendChild(more);
+            dirNode.ui.moreEl = more;
+          }
+
+          dirNode.ui.rendered = true;
+        }
+
+        function toggleDir(dirNode, rowEl, childrenEl, path) {
+          dirNode.ui.expanded = !dirNode.ui.expanded;
+          rowEl.setAttribute("aria-expanded", String(dirNode.ui.expanded));
+
+          const toggleEl = rowEl.querySelector(".toggle");
+          toggleEl.textContent = dirNode.ui.expanded ? "▾" : "▸";
+
+          childrenEl.classList.toggle("hidden", !dirNode.ui.expanded);
+
+          if (dirNode.ui.expanded) {
+            renderDirChildren(dirNode, childrenEl, path);
+          }
+        }
+
+        function clearSelectedStyles() {
+          const prev = treeEl.querySelector(".node.selected");
+          if (prev) prev.classList.remove("selected");
+        }
+
+        function selectDir(dirNode, path) {
+          clearSelectedStyles();
+          if (dirNode.ui.nodeEl) dirNode.ui.nodeEl.classList.add("selected");
+
+          state.selected = {
+            type: "dir",
+            path: path || "",
+            node: dirNode,
+            meta: dirNode.meta,
+          };
+          renderSelection();
+        }
+
+        function selectFile(fileEntry) {
+          clearSelectedStyles();
+          // We don't keep a direct element reference for each file row in this
+          // lightweight renderer, so selection highlight is best-effort.
+          state.selected = {
+            type: "file",
+            path: fileEntry.path,
+            file: fileEntry,
+            meta: fileEntry.meta,
+          };
+          renderSelection();
+        }
+
+        function renderSelection() {
+          if (!state.selected) return;
+
+          const sel = state.selected;
+          const meta = sel.meta || {};
+
+          const rows = [];
+
+          rows.push(["Type", sel.type]);
+          rows.push(["Path", sel.path || "/"]);
+
+          if (meta.source) rows.push(["Source", meta.source]);
+
+          if (meta.mode) rows.push(["Mode", meta.mode]);
+          if (meta.ownerGroup) rows.push(["Owner/Group", meta.ownerGroup]);
+          if (meta.size != null) rows.push(["Size", fmtBytes(meta.size)]);
+          if (meta.mtime) rows.push(["Time", meta.mtime]);
+          if (meta.linkTarget) rows.push(["Link target", meta.linkTarget]);
+
+          if (sel.type === "dir") {
+            const dir = sel.node;
+            rows.push([
+              "Children",
+              `${dir.children.size.toLocaleString()} dirs, ${dir.files.length.toLocaleString()} files`,
+            ]);
+          }
+
+          selectionEl.innerHTML = rows
+            .map(
+              ([k, v]) =>
+                `<div class="k">${escHtml(k)}</div><div class="v">${escHtml(
+                  String(v)
+                )}</div>`
+            )
+            .join("");
+        }
+
+        function collapseAll() {
+          // Collapse all rendered directories except root
+          const stack = [state.root];
+          while (stack.length) {
+            const node = stack.pop();
+            for (const child of node.children.values()) {
+              child.ui.expanded = false;
+              if (child.ui.nodeEl) {
+                child.ui.nodeEl.setAttribute("aria-expanded", "false");
+                const toggleEl = child.ui.nodeEl.querySelector(".toggle");
+                if (toggleEl) toggleEl.textContent = "▸";
+              }
+              if (child.ui.childrenEl) child.ui.childrenEl.classList.add("hidden");
+              stack.push(child);
+            }
+          }
+        }
+
+        // Find / search
+        async function runFind() {
+          const needleRaw = q.value.trim();
+          if (!needleRaw) return;
+
+          results.classList.remove("hidden");
+          resultsList.innerHTML = "";
+          resultsMeta.textContent = "";
+
+          const needle = needleRaw.toLowerCase();
+          state.stopFind = false;
+
+          const maxResults = 1500;
+          let found = 0;
+          let scannedDirs = 0;
+          let scannedFiles = 0;
+
+          const started = performance.now();
+
+          // Iterative DFS to avoid recursion limits
+          // Each stack item: {node, pathParts}
+          const stack = [{ node: state.root, pathParts: [] }];
+
+          function addResult(type, path, meta) {
+            const div = document.createElement("div");
+            div.className = "result";
+            div.innerHTML =
+              `<span class="faint">${type === "dir" ? "dir" : "file"}:</span> ` +
+              escHtml(path);
+
+            div.addEventListener("click", () => {
+              revealPath(path, type === "dir");
+            });
+
+            resultsList.appendChild(div);
+          }
+
+          const shouldMatch = (s) => s.toLowerCase().includes(needle);
+
+          while (stack.length && !state.stopFind) {
+            const { node, pathParts } = stack.pop();
+            const dirPath = pathParts.length ? pathParts.join("/") : "";
+
+            // Match directory itself (skip root)
+            if (node !== state.root) {
+              scannedDirs++;
+              if (shouldMatch(dirPath) || shouldMatch(node.name)) {
+                addResult("dir", dirPath, node.meta);
+                found++;
+                if (found >= maxResults) break;
+              }
+            }
+
+            // Check files
+            for (const f of node.files) {
+              scannedFiles++;
+              if (shouldMatch(f.path) || shouldMatch(f.name)) {
+                addResult("file", f.path, f.meta);
+                found++;
+                if (found >= maxResults) break;
+              }
+            }
+            if (found >= maxResults) break;
+
+            // Push children dirs
+            // (Push in reverse sort order to get stable-ish results)
+            const children = Array.from(node.children.values()).sort((a, b) =>
+              b.name.localeCompare(a.name)
+            );
+            for (const child of children) {
+              stack.push({
+                node: child,
+                pathParts: pathParts.concat(child.name),
+              });
+            }
+
+            // Yield occasionally
+            if ((scannedDirs + scannedFiles) % 8000 === 0) {
+              resultsMeta.textContent = ` (scanned ${scannedDirs.toLocaleString()} dirs, ${scannedFiles.toLocaleString()} files…)`;
+              await new Promise((r) => setTimeout(r, 0));
+            }
+          }
+
+          const ms = Math.round(performance.now() - started);
+          const stopped = state.stopFind ? " (stopped)" : "";
+          const limited =
+            found >= maxResults ? ` (hit limit ${maxResults})` : "";
+
+          resultsMeta.textContent = ` — ${found.toLocaleString()} matches${limited} in ${ms} ms${stopped}`;
+        }
+
+        function stopFind() {
+          state.stopFind = true;
+        }
+
+        function revealPath(path, isDir) {
+          // Expand tree along the path components, rendering as needed.
+          const parts = path.split("/").filter(Boolean);
+          let node = state.root;
+          let currentPath = "";
+
+          // Expand down to the directory containing target (or target dir itself)
+          const dirDepth = isDir ? parts.length : Math.max(0, parts.length - 1);
+
+          // Ensure root is rendered
+          if (!state.root.ui.rendered) renderRoot();
+
+          for (let i = 0; i < dirDepth; i++) {
+            const name = parts[i];
+            const child = node.children.get(name);
+            if (!child) break;
+
+            currentPath = currentPath ? `${currentPath}/${name}` : name;
+
+            // If directory not rendered yet, render its children container by
+            // expanding it.
+            if (child.ui.nodeEl && child.ui.childrenEl) {
+              if (!child.ui.expanded) {
+                toggleDir(child, child.ui.nodeEl, child.ui.childrenEl, currentPath);
+              } else {
+                renderDirChildren(child, child.ui.childrenEl, currentPath);
+              }
+              // Ensure visible
+              child.ui.nodeEl.scrollIntoView({ block: "center" });
+            } else {
+              // Might not be rendered because parent is not expanded.
+              // Expand current node (if it has UI).
+              if (node.ui.nodeEl && node.ui.childrenEl && !node.ui.expanded) {
+                toggleDir(node, node.ui.nodeEl, node.ui.childrenEl, currentPath);
+              }
+              // Render children and try again by forcing parent expansion.
+              if (node.ui.childrenEl) {
+                renderDirChildren(node, node.ui.childrenEl, currentPath);
+              }
+            }
+
+            node = child;
+          }
+
+          // Select
+          if (isDir) {
+            selectDir(node, parts.join("/"));
+            return;
+          }
+
+          // Find file in directory
+          const fileName = parts[parts.length - 1];
+          const filePath = parts.join("/");
+          const f = node.files.find((x) => x.name === fileName);
+          if (f) {
+            selectFile(f);
+            // Best-effort scroll: scroll to folder, file row might be below.
+            if (node.ui.nodeEl) node.ui.nodeEl.scrollIntoView({ block: "center" });
+          } else {
+            // File might be beyond render limit; inform user.
+            selectionEl.innerHTML = `
+              <div class="k">Status</div>
+              <div class="v warn">Found path, but file is not currently rendered (folder may be huge).</div>
+              <div class="k">File</div>
+              <div class="v">${escHtml(filePath)}</div>
+              <div class="k">Tip</div>
+              <div class="v">Expand the folder and click <span class="kbd">Show more</span> if present.</div>
+            `;
+          }
+        }
+
+        // Events
+        function wireDropzone() {
+          function onDragOver(e) {
+            e.preventDefault();
+            drop.classList.add("dragover");
+          }
+          function onDragLeave(e) {
+            e.preventDefault();
+            drop.classList.remove("dragover");
+          }
+          async function onDrop(e) {
+            e.preventDefault();
+            drop.classList.remove("dragover");
+            const file = e.dataTransfer.files?.[0];
+            if (!file) return;
+            await parseFile(file);
+          }
+
+          drop.addEventListener("dragover", onDragOver);
+          drop.addEventListener("dragleave", onDragLeave);
+          drop.addEventListener("drop", onDrop);
+          drop.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") fileInput.click();
+          });
+        }
+
+        function loadDemo() {
+          const demo = [
+            "etc/hosts",
+            "etc/ssh/sshd_config",
+            "etc/systemd/system/example.service",
+            "-rw-r--r-- root/root 1234 2026-01-01 12:34 var/log/syslog",
+            "drwxr-xr-x root/root 0 2026-01-01 12:00 var/log",
+            "lrwxrwxrwx root/root 0 2026-01-01 12:00 bin/sh -> bash",
+            "12345 4 -rw-r--r-- 1 root root 4321 Jan 2 2026 home/user/readme.txt",
+          ].join("\n");
+
+          // Parse demo as a pseudo-file
+          resetAll();
+          switchToApp();
+
+          const lines = demo.split(/\n/);
+          for (const line of lines) parseLine(line);
+
+          updateStatsChip();
+          renderRoot();
+          selectDir(state.root, "");
+        }
+
+        // Initialization
+        wireDropzone();
+
+        fileInput.addEventListener("change", async () => {
+          const file = fileInput.files?.[0];
+          if (!file) return;
+          await parseFile(file);
+        });
+
+        btnReset.addEventListener("click", () => resetAll());
+        btnDemo.addEventListener("click", () => loadDemo());
+
+        btnFind.addEventListener("click", async () => {
+          if (state.parsing) return;
+          await runFind();
+        });
+
+        btnStopFind.addEventListener("click", () => stopFind());
+
+        q.addEventListener("keydown", async (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            await runFind();
+          }
+        });
+
+        btnCollapseAll.addEventListener("click", () => collapseAll());
+
+        // Start in landing mode
+        resetAll();
+      })();
+    </script>
+  </body>
+</html>
