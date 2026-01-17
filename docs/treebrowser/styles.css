@@ -785,11 +785,13 @@ button.danger {
   margin: 6px 0 0 18px;
   padding: 0;
   list-style: disc;
+  line-height: 1.6;
 }
 
 .cmd-list code {
   font-family: var(--mono);
   font-size: 12px;
+  line-height: 1.5;
   background: var(--panel-2);
   border: 1px solid var(--border);
   border-radius: 6px;
