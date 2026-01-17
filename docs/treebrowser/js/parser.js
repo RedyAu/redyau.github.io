@@ -4,6 +4,9 @@ function normalizePath(p) {
   if (!p) return "";
   let s = p.trim();
   if (!s) return "";
+  s = s.replace(/^\\\\\?\\/, "");
+  s = s.replace(/\\/g, "/");
+  s = s.replace(/^[a-zA-Z]:\//, "");
   if (s.startsWith("./")) s = s.slice(2);
   s = s.replace(/^\/+/, "");
   s = s.replace(/\/{2,}/g, "/");
@@ -32,6 +35,49 @@ function looksLikeFindLs(line) {
   if (!/^\d+$/.test(parts[0])) return false;
   if (!/^\d+$/.test(parts[1])) return false;
   return isModeToken(parts[2]);
+}
+
+function looksLikeWindowsDirEntry(line) {
+  return /^\d{1,2}\/\d{1,2}\/\d{4}\s+\d{1,2}:\d{2}(?:\s+(AM|PM))?\s+/.test(
+    line.trim()
+  );
+}
+
+function parseWindowsDirEntry(line, baseDir) {
+  const s = line.trim();
+  const match =
+    /^(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}:\d{2})(?:\s+(AM|PM))?\s+(<[^>]+>|[0-9,]+)\s+(.+)$/.exec(
+      s
+    );
+  if (!match) return null;
+
+  const dateTok = match[1];
+  const timeTok = match[2];
+  const ampm = match[3] || "";
+  const sizeTok = match[4];
+  const name = match[5].trim();
+
+  if (!name || name === "." || name === "..") return null;
+
+  if (/^<\s*JUNCTION\s*>$/i.test(sizeTok)) return null;
+
+  const isDir = /^<.+>$/.test(sizeTok);
+  const size = isDir ? null : Number(sizeTok.replace(/,/g, ""));
+
+  const meta = {
+    mode: null,
+    ownerGroup: null,
+    size: Number.isFinite(size) ? size : null,
+    mtime: `${dateTok} ${timeTok}${ampm ? ` ${ampm}` : ""}`,
+    linkTarget: null,
+    source: "windows-dir",
+  };
+
+  const combined = baseDir ? `${baseDir}/${name}` : name;
+  const path = normalizePath(combined);
+  if (!path) return null;
+
+  return { path, meta, isDir };
 }
 
 function parseTarTvOrLsLong(line) {
@@ -127,14 +173,37 @@ function parseLine(state, line) {
   state.stats.lines++;
 
   const s = line.trim();
+
   if (!s || s === "." || s === "./" || s.startsWith("total ")) {
+    state.stats.skipped++;
+    return;
+  }
+
+  if (s.startsWith("Directory of ")) {
+    state.windowsDir = normalizePath(s.slice("Directory of ".length));
+    state.stats.skipped++;
+    return;
+  }
+
+  if (
+    s.startsWith("Volume in drive ") ||
+    s.startsWith("Volume Serial Number") ||
+    /^\d+\s+File\(s\)/i.test(s) ||
+    /^\d+\s+Dir\(s\)/i.test(s) ||
+    s.startsWith("Total Files Listed")
+  ) {
     state.stats.skipped++;
     return;
   }
 
   let parsed = null;
 
-  if (looksLikeFindLs(s)) {
+  if (looksLikeWindowsDirEntry(s)) {
+    parsed = parseWindowsDirEntry(s, state.windowsDir || "");
+    if (parsed && state.stats.formatGuess === "unknown") {
+      state.stats.formatGuess = "windows dir";
+    }
+  } else if (looksLikeFindLs(s)) {
     parsed = parseFindLs(s);
     if (parsed && state.stats.formatGuess === "unknown") {
       state.stats.formatGuess = "find -ls";
@@ -170,6 +239,7 @@ function parseLine(state, line) {
 export async function parseFile(state, file, { onProgress }) {
   state.parsing = true;
   state.lastFileName = file.name;
+  state.windowsDir = "";
 
   const chunkSize = 2 * 1024 * 1024;
   const decoder = new TextDecoder("utf-8");

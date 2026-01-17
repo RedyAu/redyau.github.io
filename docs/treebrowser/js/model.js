@@ -29,6 +29,8 @@ export function createState() {
       withMeta: 0,
       totalSize: 0,
       sizeKnownCount: 0,
+      timeKnownCount: 0,
+      modeKnownCount: 0,
       formatGuess: "unknown",
     },
     selected: null,
@@ -49,6 +51,8 @@ export function resetState(state) {
     withMeta: 0,
     totalSize: 0,
     sizeKnownCount: 0,
+    timeKnownCount: 0,
+    modeKnownCount: 0,
     formatGuess: "unknown",
   };
   state.selected = null;
@@ -75,12 +79,18 @@ export function addPathToTree(state, path, isDir, meta) {
   }
 
   if (isDir) {
-    if (meta) {
+    if (meta && !node.meta) {
       node.meta = node.meta || meta;
       state.stats.withMeta++;
       if (meta.size != null) {
         state.stats.totalSize += meta.size;
         state.stats.sizeKnownCount++;
+      }
+      if (meta.mtime) {
+        state.stats.timeKnownCount++;
+      }
+      if (meta.mode) {
+        state.stats.modeKnownCount++;
       }
     }
     return;
@@ -104,6 +114,12 @@ export function addPathToTree(state, path, isDir, meta) {
     if (meta.size != null) {
       state.stats.totalSize += meta.size;
       state.stats.sizeKnownCount++;
+    }
+    if (meta.mtime) {
+      state.stats.timeKnownCount++;
+    }
+    if (meta.mode) {
+      state.stats.modeKnownCount++;
     }
   }
 }

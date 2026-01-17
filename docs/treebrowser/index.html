@@ -7,35 +7,75 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     <title>Tree Browser</title>
+    <meta
+      name="description"
+      content="Tree Browser lets you explore large file lists locally in your browser. Load tar listings, find outputs, or Windows dir listings to browse folders instantly."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Tree Browser" />
+    <meta
+      property="og:description"
+      content="Explore large file lists locally in your browser. Supports tar, find, and Windows dir outputs."
+    />
+    <meta property="og:url" content="https://redyau.github.io/treebrowser/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Tree Browser" />
+    <meta
+      name="twitter:description"
+      content="Explore large file lists locally in your browser. Supports tar, find, and Windows dir outputs."
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="wrap">
       <header>
         <div>
-          <h1>Filelist Tree Browser (static)</h1>
+          <h1>Tree Browser</h1>
           <div class="sub">
-            Drop a file list (e.g. <span class="kbd">tar -tf</span> or
-            <span class="kbd">tar -tvf</span>) and browse it locally.
+            Browse large file lists locally in seconds.
           </div>
         </div>
         <div class="btns">
           <button id="btnReset" class="danger hidden">Reset</button>
+          <button id="btnSearch" class="primary">Search</button>
           <button id="btnDemo" title="Load a small built-in demo list">
             Load demo
           </button>
+          <a class="btn" href="https://fodor.pro/" rel="me">fodor.pro</a>
         </div>
       </header>
 
+      <div class="subbar">
+        <nav id="currentPath" class="path breadcrumbs" aria-label="Breadcrumb"></nav>
+        <span id="chipStats" class="chip">No data</span>
+      </div>
+
       <div id="landing" class="card landing">
         <strong>Load a file list</strong>
-        <p>Drop a text file containing paths (e.g. <span class="kbd">tar -tf</span> output).</p>
+        <div class="small muted" style="margin-top:6px">
+          Drop a text file containing paths.
+        </div>
+        <div class="small muted" style="margin-top:4px">
+          You can also paste a file list from the clipboard.
+        </div>
+
+        <div class="small" style="margin-top:12px">
+          Example commands:
+          <ul class="cmd-list">
+            <li><code>tar -tf archive.tar</code></li>
+            <li><code>tar -tvf archive.tar</code></li>
+            <li><code>find /path -ls</code></li>
+            <li><code>find /path -printf '%p\n'</code></li>
+            <li><code>dir /s /a /-c</code> (Windows, recursive)</li>
+          </ul>
+        </div>
 
         <div id="drop" class="drop" tabindex="0">
           <strong>Drag & drop your filelist file here</strong>
           <div class="small">
             Or use the file picker. Nothing is uploaded; parsing happens in your
-            browser.
+            browser. Paste with Ctrl+V.
           </div>
           <div class="btns">
             <label class="btn primary" for="fileInput">Choose file…</label>
@@ -50,66 +90,68 @@
       </div>
 
       <div id="app" class="card main hidden" aria-live="polite">
-        <div class="pane">
-          <div class="toolbar">
-            <div class="left">
-              <div class="input" title="Search the index (limited results)">
-                <label for="q">Find</label>
-                <input
-                  id="q"
-                  type="text"
-                  placeholder="substring match (e.g. etc/ssh, passwd, .service)"
-                  autocomplete="off"
-                />
-              </div>
-              <button id="btnFind" class="primary">Find</button>
-              <button id="btnStopFind">Stop</button>
-            </div>
-            <div class="right">
-              <span id="chipStats" class="chip">No data</span>
-            </div>
-          </div>
-
-          <div id="tree" class="tree" role="tree"></div>
-
-          <div id="results" class="results hidden">
-            <h3>
-              Results (limited). Click to reveal in tree.
-              <span id="resultsMeta" class="faint"></span>
-            </h3>
-            <div id="resultsList"></div>
+        <div class="pane pane-left">
+          <div class="tree-wrap">
+            <button id="btnCollapseAll" class="floating-btn" title="Collapse all folders">
+              Collapse
+            </button>
+            <div id="tree" class="tree" role="tree"></div>
           </div>
         </div>
 
-        <div class="pane">
-          <div class="toolbar">
-            <div class="left">
-              <span class="chip">Selection</span>
-            </div>
-            <div class="right">
-              <button id="btnCollapseAll" title="Collapse all folders">
-                Collapse all
-              </button>
-            </div>
-          </div>
-
+        <div class="pane pane-right">
           <div class="details">
-            <div id="selection" class="kv">
-              <div class="k">Status</div>
-              <div class="v">No item selected.</div>
-
-              <div class="k">Hint</div>
-              <div class="v">
-                Use <span class="kbd">Find</span>, then click a result to reveal
-                it.
+            <div id="dirTable" class="table" role="table" aria-label="Directory listing">
+              <div class="thead" role="row">
+                <button class="th sort" role="columnheader" data-key="name" aria-sort="ascending">
+                  Name
+                </button>
+                <button class="th sort" role="columnheader" data-key="size" aria-sort="none">
+                  Size
+                </button>
+                <button class="th sort" role="columnheader" data-key="time" aria-sort="none">
+                  Time
+                </button>
+                <button class="th sort" role="columnheader" data-key="mode" aria-sort="none">
+                  Mode
+                </button>
               </div>
+              <div id="dirBody" class="tbody" role="rowgroup"></div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="footer-note">
-        Nothing is uploaded; parsing happens in your browser.
+    <div id="searchModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+      <div class="modal-card">
+        <div class="modal-head">
+          <div class="modal-title" id="searchTitle">Search</div>
+          <button id="btnCloseSearch" class="btn" aria-label="Close">Close</button>
+        </div>
+        <div class="modal-body">
+          <div class="input" title="Search the index (limited results)">
+            <label for="q">Find</label>
+            <input
+              id="q"
+              type="text"
+              placeholder="substring match (e.g. etc/ssh, passwd, .service)"
+              autocomplete="off"
+            />
+          </div>
+          <div class="btns" style="justify-content:flex-start;margin-top:10px">
+            <button id="btnFind" class="primary">Search</button>
+            <button id="btnStopFind">Stop</button>
+          </div>
+
+          <div id="results" class="results">
+            <div class="results-head">
+              <div class="muted small">Results</div>
+              <div id="resultsMeta" class="faint small"></div>
+            </div>
+            <div id="resultsList"></div>
+          </div>
+        </div>
       </div>
     </div>
     <script type="module" src="./js/app.js"></script>
