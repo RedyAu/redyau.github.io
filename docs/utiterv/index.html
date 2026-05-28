@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RV Route Options: Salt Lake City to Los Angeles</title>
+  <style>
+    :root {
+      --sand: #f5ead7;
+      --paper: #fffaf0;
+      --ink: #24302f;
+      --muted: #65716d;
+      --rust: #af4f2f;
+      --sage: #5f7d69;
+      --clay: #d39b64;
+      --line: rgba(36, 48, 47, 0.16);
+      --shadow: 0 22px 60px rgba(58, 42, 25, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(211, 155, 100, 0.34), transparent 34rem),
+        radial-gradient(circle at 90% 0%, rgba(95, 125, 105, 0.22), transparent 30rem),
+        linear-gradient(135deg, #f9efe0 0%, #efe0c5 100%);
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 42px 0 56px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 24px;
+    }
+
+    .panel {
+      background: rgba(255, 250, 240, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      backdrop-filter: blur(8px);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.05;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(2.4rem, 5vw, 5.3rem);
+      letter-spacing: -0.06em;
+    }
+
+    h2 {
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      letter-spacing: -0.035em;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .lede {
+      max-width: 830px;
+      color: var(--muted);
+      font-size: 1.16rem;
+      margin: 20px 0 0;
+    }
+
+    .verdict {
+      display: grid;
+      gap: 14px;
+    }
+
+    .verdict strong {
+      color: var(--rust);
+    }
+
+    .route {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .route::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, rgba(175, 79, 47, 0.11), transparent 45%);
+      pointer-events: none;
+    }
+
+    .route > * {
+      position: relative;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(95, 125, 105, 0.14);
+      color: var(--sage);
+      font: 700 0.78rem/1.1 "Trebuchet MS", sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .meta div {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    .meta span {
+      display: block;
+      color: var(--muted);
+      font: 700 0.72rem/1.1 "Trebuchet MS", sans-serif;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .maplink {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: var(--ink);
+      color: #fff8e8;
+      font: 700 0.95rem/1 "Trebuchet MS", sans-serif;
+      text-decoration: none;
+    }
+
+    .maplink:hover {
+      background: var(--rust);
+    }
+
+    ul {
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 0.48rem 0;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .mini {
+      border-left: 5px solid var(--clay);
+    }
+
+    .mini p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .note {
+      margin-top: 24px;
+      border: 1px dashed rgba(175, 79, 47, 0.45);
+      background: rgba(255, 250, 240, 0.68);
+    }
+
+    .route-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .summary-card {
+      display: grid;
+      align-content: space-between;
+      gap: 16px;
+      min-height: 310px;
+    }
+
+    .summary-card.recommended {
+      border: 2px solid rgba(95, 125, 105, 0.4);
+    }
+
+    .summary-card p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: rgba(36, 48, 47, 0.08);
+      color: var(--ink);
+      font: 700 0.78rem/1.1 "Trebuchet MS", sans-serif;
+    }
+
+    .pill.route-pill {
+      background: rgba(175, 79, 47, 0.13);
+      color: #8d3c23;
+    }
+
+    .pill.place-pill {
+      background: rgba(95, 125, 105, 0.15);
+      color: #425f4e;
+    }
+
+    .pill.hike-pill {
+      background: rgba(211, 155, 100, 0.2);
+      color: #895f2e;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 0;
+    }
+
+    .timeline {
+      margin-top: 24px;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .timeline-head,
+    .day-row {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .timeline-head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: rgba(36, 48, 47, 0.95);
+      color: #fff8e8;
+      font: 700 0.86rem/1.2 "Trebuchet MS", sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .timeline-head > div,
+    .day-cell,
+    .date-cell {
+      padding: 18px;
+    }
+
+    .day-row {
+      border-top: 1px solid var(--line);
+      background: rgba(255, 250, 240, 0.72);
+    }
+
+    .day-row:nth-child(odd) {
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    .date-cell {
+      background:
+        linear-gradient(180deg, rgba(175, 79, 47, 0.08), transparent),
+        rgba(255, 250, 240, 0.72);
+      border-right: 1px solid var(--line);
+      font: 700 0.9rem/1.2 "Trebuchet MS", sans-serif;
+      color: var(--rust);
+    }
+
+    .date-cell span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .day-cell {
+      border-right: 1px solid var(--line);
+    }
+
+    .day-cell:last-child {
+      border-right: 0;
+    }
+
+    .day-title {
+      margin: 0 0 10px;
+      font-size: 1.18rem;
+      letter-spacing: -0.02em;
+    }
+
+    .day-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .detail-grid {
+      display: grid;
+      gap: 9px;
+    }
+
+    .detail {
+      display: grid;
+      grid-template-columns: 82px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .detail b {
+      color: var(--ink);
+      font: 700 0.74rem/1.2 "Trebuchet MS", sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .choice {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(95, 125, 105, 0.11);
+      color: #425f4e;
+      font-size: 0.94rem;
+    }
+
+    .warning {
+      background: rgba(175, 79, 47, 0.11);
+      color: #8d3c23;
+    }
+
+    .single-plan {
+      margin-top: 24px;
+      border: 2px solid rgba(175, 79, 47, 0.26);
+    }
+
+    .single-plan .timeline-head,
+    .single-plan .day-row {
+      grid-template-columns: 112px minmax(0, 1fr);
+    }
+
+    .single-intro {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      padding: 28px;
+      background:
+        linear-gradient(135deg, rgba(175, 79, 47, 0.12), transparent 46%),
+        rgba(255, 250, 240, 0.78);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .single-intro p {
+      max-width: 780px;
+      margin: 12px 0 0;
+      color: var(--muted);
+    }
+
+    .base-strip {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      padding: 18px;
+      background: rgba(36, 48, 47, 0.06);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .base {
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(255, 250, 240, 0.72);
+      border: 1px solid var(--line);
+    }
+
+    .base b,
+    .base span {
+      display: block;
+    }
+
+    .base b {
+      color: var(--rust);
+      font-size: 1rem;
+    }
+
+    .base span {
+      margin-top: 4px;
+      color: var(--muted);
+      font: 700 0.72rem/1.2 "Trebuchet MS", sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 860px) {
+      .hero,
+      .route-summary,
+      .compare {
+        grid-template-columns: 1fr;
+      }
+
+      .meta {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline-head {
+        display: none;
+      }
+
+      .day-row {
+        grid-template-columns: 1fr;
+      }
+
+      .date-cell,
+      .day-cell {
+        border-right: 0;
+      }
+
+      .date-cell {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .day-cell::before {
+        content: attr(data-option);
+        display: inline-block;
+        margin-bottom: 10px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: rgba(36, 48, 47, 0.9);
+        color: #fff8e8;
+        font: 700 0.72rem/1 "Trebuchet MS", sans-serif;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .single-intro,
+      .base-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .single-plan .day-row {
+        grid-template-columns: 1fr;
+      }
+
+      .single-plan .day-cell::before {
+        content: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="panel">
+        <span class="badge">May 27 to June 8, 2026</span>
+        <h1>Two RV Routes From Salt Lake City to Los Angeles</h1>
+        <p class="lede">The stronger plan drops weak detours and protects the big experiences: Grand Canyon, Route 66, Las Vegas for half a day, desert scenery, and one California big-tree finish.</p>
+      </div>
+      <aside class="panel verdict">
+        <h2>Big Picture Verdict</h2>
+        <p><strong>Best route:</strong> Bonneville only if it feels emotionally worth the first-day detour. After that, go south through Nevada/Arizona, not across every possible park.</p>
+        <p><strong>Least sensible stops:</strong> Redwood National Park is too far north, Chiricahua is too far southeast, Robbers Roost conflicts with the no-dirt rule, and a true Grand Canyon bottom hike is unsafe without an overnight permit.</p>
+        <p><strong>Keep:</strong> Route 66 Seligman-Kingman-Oatman-Topock, Grand Canyon South Rim, Lees Ferry if you want easy Colorado River access, and either Sequoia or Yosemite for giant trees.</p>
+      </aside>
+    </section>
+
+    <section class="route-summary">
+      <article class="panel route summary-card recommended">
+        <span class="badge">Option A: Recommended</span>
+        <h2>Balanced Canyon, Route 66, Sequoia</h2>
+        <p>This is the best common-sense itinerary. It avoids Yosemite/Tioga uncertainty, uses Sequoia for giant trees, and keeps the route coherent for an RV.</p>
+        <div class="meta">
+          <div><span>Pace</span>Moderate</div>
+          <div><span>Risk</span>Low</div>
+          <div><span>Finish</span>LA June 8</div>
+        </div>
+        <div class="actions">
+          <a class="maplink" href="https://www.google.com/maps/dir/Salt+Lake+City,+UT/Bonneville+Salt+Flats+International+Speedway/Wendover,+UT/Ely,+NV/Cathedral+Gorge+State+Park/Valley+of+Fire+State+Park/Hoover+Dam/Kingman,+AZ/Hackberry+General+Store,+AZ/Seligman,+AZ/Williams,+AZ/Grand+Canyon+Village,+AZ/Oatman,+AZ/Topock,+AZ/Needles,+CA/Barstow,+CA/Sequoia+National+Park/Los+Angeles,+CA" target="_blank" rel="noreferrer">Open Option A Map</a>
+          <span class="pill place-pill">Best overall</span>
+          <span class="pill route-pill">Fewer fragile roads</span>
+        </div>
+      </article>
+
+      <article class="panel route summary-card">
+        <span class="badge">Option B: More Scenic, More Fragile</span>
+        <h2>Lees Ferry, Grand Canyon, Route 66, Yosemite</h2>
+        <p>This route has the best variety and the more iconic California finish, but it depends on Sierra road/weather conditions and asks more from the schedule.</p>
+        <div class="meta">
+          <div><span>Pace</span>Full</div>
+          <div><span>Risk</span>Medium</div>
+          <div><span>Finish</span>LA June 8</div>
+        </div>
+        <div class="actions">
+          <a class="maplink" href="https://www.google.com/maps/dir/Salt+Lake+City,+UT/Bonneville+Salt+Flats+International+Speedway/Wendover,+UT/Circleville,+UT/Kanab,+UT/Lees+Ferry,+AZ/Desert+View+Watchtower/Grand+Canyon+Village,+AZ/Flagstaff,+AZ/Seligman,+AZ/Kingman,+AZ/Oatman,+AZ/Topock,+AZ/Las+Vegas,+NV/Death+Valley+National+Park/Lone+Pine,+CA/Lee+Vining,+CA/Yosemite+Valley,+CA/Mariposa+Grove,+Yosemite/Los+Angeles,+CA" target="_blank" rel="noreferrer">Open Option B Map</a>
+          <span class="pill place-pill">Most varied</span>
+          <span class="pill route-pill">Tioga-dependent</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel timeline">
+      <div class="timeline-head">
+        <div>Day</div>
+        <div>Option A: Balanced / Sequoia</div>
+        <div>Option B: Scenic / Yosemite</div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 27<span>Day 1</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Salt flats opener</h3>
+          <div class="day-tags"><span class="pill route-pill">I-80 out, scenic payoff</span><span class="pill place-pill">Bonneville</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Salt Lake City to Bonneville Salt Flats, then Wendover.</span></div>
+            <div class="detail"><b>Why</b><span>One surreal visual stop; keep it only because it is distinctive and easy on day one.</span></div>
+            <div class="detail"><b>Hike</b><span>None. Short walk/photo stop on the salt if conditions allow.</span></div>
+            <div class="detail"><b>Overnight</b><span>Wendover area; simple RV park or casino-area overnight if permitted.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Same salt-flat opener</h3>
+          <div class="day-tags"><span class="pill route-pill">Same first leg</span><span class="pill place-pill">Bonneville</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Salt Lake City to Bonneville Salt Flats, then Wendover.</span></div>
+            <div class="detail"><b>Why</b><span>Same tradeoff: memorable, but not central to the trip.</span></div>
+            <div class="detail"><b>Hike</b><span>None.</span></div>
+            <div class="detail"><b>Overnight</b><span>Wendover area.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 28<span>Day 2</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Basin-and-range Nevada</h3>
+          <div class="day-tags"><span class="pill route-pill">US-93</span><span class="pill place-pill">Ely</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Wendover to Ely by US-93/US-93 Alt.</span></div>
+            <div class="detail"><b>Why</b><span>Quiet, big-sky desert driving; better than forcing busy interstates.</span></div>
+            <div class="detail"><b>Stop</b><span>Ely murals or Nevada Northern Railway if timing works.</span></div>
+            <div class="detail"><b>Overnight</b><span>Ely RV park or nearby no-hookup public campground.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Cut toward southern Utah</h3>
+          <div class="day-tags"><span class="pill route-pill">Long transfer</span><span class="pill place-pill">Butch Cassidy</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Wendover toward Circleville/Panguitch.</span></div>
+            <div class="detail"><b>Why</b><span>This sets up Lees Ferry and Grand Canyon from the northeast.</span></div>
+            <div class="detail"><b>Stop</b><span>Butch Cassidy childhood home: quick, low-friction cultural stop.</span></div>
+            <div class="detail"><b>Overnight</b><span>Panguitch, Circleville, or Kanab-area RV campground.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 29<span>Day 3</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Cathedral Gorge to Valley of Fire</h3>
+          <div class="day-tags"><span class="pill route-pill">US-93</span><span class="pill place-pill">Valley of Fire</span><span class="pill hike-pill">Short hikes</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Ely to Cathedral Gorge, then Valley of Fire.</span></div>
+            <div class="detail"><b>Why</b><span>High scenery per mile: eroded clay slots, red sandstone, good RV services.</span></div>
+            <div class="detail"><b>Hike</b><span>Cathedral Gorge slots; Valley of Fire short sunset walk if cool enough.</span></div>
+            <div class="detail"><b>Overnight</b><span>Valley of Fire or Lake Mead-area campground; good point to dump/refill.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Colorado River at Lees Ferry</h3>
+          <div class="day-tags"><span class="pill place-pill">Lees Ferry</span><span class="pill hike-pill">River walk</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Kanab/Page area to Navajo Bridge and Lees Ferry.</span></div>
+            <div class="detail"><b>Why</b><span>Best safe substitute for “bottom of the Canyon” without overnight permits.</span></div>
+            <div class="detail"><b>Hike</b><span>Easy riverside walk; optional Cathedral Wash only if conditions and confidence are good.</span></div>
+            <div class="detail"><b>Overnight</b><span>Lees Ferry campground or Page/Marble Canyon RV option.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 30<span>Day 4</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Hoover Dam to Kingman</h3>
+          <div class="day-tags"><span class="pill place-pill">Hoover Dam</span><span class="pill route-pill">Positioning day</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Valley of Fire/Lake Mead to Hoover Dam, then Kingman.</span></div>
+            <div class="detail"><b>Why</b><span>Keeps Vegas out of the main day and positions you for Route 66.</span></div>
+            <div class="detail"><b>Stop</b><span>Hoover Dam overlook or visitor area; avoid making this a full tour day.</span></div>
+            <div class="detail"><b>Overnight</b><span>Kingman RV park; useful service reset before Route 66/Grand Canyon.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">River level to rim level</h3>
+          <div class="day-tags"><span class="pill route-pill">Desert View Drive</span><span class="pill place-pill">Grand Canyon</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Lees Ferry to Desert View Watchtower, then South Rim.</span></div>
+            <div class="detail"><b>Why</b><span>Best narrative day: Colorado River in the morning, Canyon rim by afternoon.</span></div>
+            <div class="detail"><b>Stop</b><span>Desert View, Lipan Point, Grandview as parking allows.</span></div>
+            <div class="detail"><b>Overnight</b><span>Mather Campground, Trailer Village, Tusayan, or Williams fallback.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 31<span>Day 5</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Classic Route 66 eastbound</h3>
+          <div class="day-tags"><span class="pill route-pill">Kingman-Seligman</span><span class="pill place-pill">Hackberry</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Kingman, Hackberry General Store, Peach Springs, Seligman, Williams.</span></div>
+            <div class="detail"><b>Why</b><span>The most RV-sane authentic Route 66 segment: paved, historic, and relaxed.</span></div>
+            <div class="detail"><b>Stop</b><span>Seligman for the Route 66 feel; Williams for food and supplies.</span></div>
+            <div class="detail"><b>Overnight</b><span>Williams or Grand Canyon/Tusayan if available.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Big in-canyon hike</h3>
+          <div class="day-tags"><span class="pill hike-pill">South Kaibab</span><span class="pill place-pill">Grand Canyon</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Minimal driving. Park once and use Grand Canyon shuttles.</span></div>
+            <div class="detail"><b>Why</b><span>This is the serious Canyon day; avoid adding road mileage.</span></div>
+            <div class="detail"><b>Hike</b><span>Cedar Ridge default; Skeleton Point only with dawn start, heat discipline, and enough water.</span></div>
+            <div class="detail"><b>Overnight</b><span>Same Grand Canyon/Tusayan/Williams base.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 1<span>Day 6</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Grand Canyon rim day</h3>
+          <div class="day-tags"><span class="pill place-pill">South Rim</span><span class="pill hike-pill">Light walks</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Williams/Tusayan to South Rim; shuttle-based inside park.</span></div>
+            <div class="detail"><b>Why</b><span>Top-view day before the descent gives context and protects energy.</span></div>
+            <div class="detail"><b>Walk</b><span>Rim Trail sections, Hermit Road viewpoints, Desert View if driving in/out east.</span></div>
+            <div class="detail"><b>Overnight</b><span>Grand Canyon/Tusayan/Williams. Dump at Mather if staying in park.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Recovery and rim viewpoints</h3>
+          <div class="day-tags"><span class="pill hike-pill">Rest day</span><span class="pill place-pill">South Rim</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Minimal driving.</span></div>
+            <div class="detail"><b>Why</b><span>Real rest day after the Canyon hike; tanks and groceries reset.</span></div>
+            <div class="detail"><b>Activity</b><span>Rim viewpoints, laundry, dump/refill, early night.</span></div>
+            <div class="detail"><b>Overnight</b><span>Grand Canyon/Tusayan/Williams.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 2<span>Day 7</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Big in-canyon hike</h3>
+          <div class="day-tags"><span class="pill hike-pill">South Kaibab</span><span class="pill place-pill">Grand Canyon</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>No major drive; use shuttle to South Kaibab trailhead.</span></div>
+            <div class="detail"><b>Why</b><span>The main physical day of the trip.</span></div>
+            <div class="detail"><b>Hike</b><span>Cedar Ridge is the smart family target; Skeleton Point is the hard extension.</span></div>
+            <div class="detail"><b>Overnight</b><span>Same base; avoid a long drive after the climb out.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Culture and Route 66</h3>
+          <div class="day-tags"><span class="pill place-pill">Flagstaff</span><span class="pill route-pill">Seligman-Kingman</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Grand Canyon/Williams to Flagstaff, Seligman, Kingman.</span></div>
+            <div class="detail"><b>Why</b><span>Adds an authentic Native/Southwest museum option before returning to Route 66.</span></div>
+            <div class="detail"><b>Stop</b><span>Museum of Northern Arizona, then Seligman and Hackberry if time allows.</span></div>
+            <div class="detail"><b>Overnight</b><span>Kingman RV park or no-frills overnight nearby.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 3<span>Day 8</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Rest and service day</h3>
+          <div class="day-tags"><span class="pill hike-pill">Rest day</span><span class="pill place-pill">Williams/Flagstaff</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Stay put or short Flagstaff/Williams loop.</span></div>
+            <div class="detail"><b>Why</b><span>Built-in recovery after the Canyon and a practical dump/laundry/supply day.</span></div>
+            <div class="detail"><b>Activity</b><span>Museum of Northern Arizona or just RV downtime.</span></div>
+            <div class="detail"><b>Overnight</b><span>Williams or Flagstaff. Prefer serviced RV park tonight.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Oatman and old Route 66</h3>
+          <div class="day-tags"><span class="pill route-pill">Sitgreaves Pass</span><span class="pill place-pill">Oatman</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Kingman to Cool Springs, Sitgreaves Pass, Oatman, Topock, Needles.</span></div>
+            <div class="detail"><b>Why</b><span>The most characterful Route 66 driving, but slow and twisty in an RV.</span></div>
+            <div class="detail"><b>Stop</b><span>Cool Springs, Oatman main street, Colorado River crossing.</span></div>
+            <div class="detail"><b>Overnight</b><span>Needles, Laughlin, or Lake Havasu area.</span></div>
+          </div>
+          <div class="choice warning">Drive this dry, early, and unhurried. Skip Oatman if anyone is uncomfortable with narrow mountain curves.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 4<span>Day 9</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Oatman and old Route 66</h3>
+          <div class="day-tags"><span class="pill route-pill">Sitgreaves Pass</span><span class="pill place-pill">Oatman</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Williams/Seligman to Kingman, Oatman, Topock, Needles.</span></div>
+            <div class="detail"><b>Why</b><span>Keeps the full Seligman-to-Topock Route 66 goal intact.</span></div>
+            <div class="detail"><b>Stop</b><span>Hackberry if missed earlier, Cool Springs, Oatman.</span></div>
+            <div class="detail"><b>Overnight</b><span>Needles/Laughlin area; likely no-hookup or simple RV park.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Las Vegas half-day</h3>
+          <div class="day-tags"><span class="pill place-pill">Las Vegas</span><span class="pill route-pill">Position for Death Valley</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Needles/Laughlin to Hoover Dam or Las Vegas, then Pahrump/Red Rock area.</span></div>
+            <div class="detail"><b>Why</b><span>Contains Vegas to the requested half-day and sets up Death Valley.</span></div>
+            <div class="detail"><b>Stop</b><span>Midday Strip/Fremont walk, one meal, then leave before evening traffic.</span></div>
+            <div class="detail"><b>Overnight</b><span>Pahrump RV park, Red Rock-area private campground, or Las Vegas RV park.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 5<span>Day 10</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Las Vegas, then west</h3>
+          <div class="day-tags"><span class="pill place-pill">Las Vegas</span><span class="pill route-pill">Mojave transfer</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Needles/Laughlin to Las Vegas for half-day, then Barstow/Bakersfield direction.</span></div>
+            <div class="detail"><b>Why</b><span>Meets the Vegas requirement without letting it consume the trip.</span></div>
+            <div class="detail"><b>Stop</b><span>Choose one: Fremont, Bellagio/Strip walk, or Neon Museum if booked.</span></div>
+            <div class="detail"><b>Overnight</b><span>Barstow, Tehachapi, or Bakersfield-area RV park.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Death Valley to the Sierra</h3>
+          <div class="day-tags"><span class="pill place-pill">Death Valley</span><span class="pill route-pill">US-395 setup</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Pahrump/Las Vegas to Death Valley viewpoints, then Lone Pine/Bishop.</span></div>
+            <div class="detail"><b>Why</b><span>Huge landscape shift: desert basin to Sierra wall.</span></div>
+            <div class="detail"><b>Stop</b><span>Zabriskie Point, Badwater only if heat and RV conditions are acceptable.</span></div>
+            <div class="detail"><b>Overnight</b><span>Lone Pine or Bishop RV park. Prefer hookups after hot desert travel.</span></div>
+          </div>
+          <div class="choice warning">June heat can be severe. This is a scenic transit, not a hiking day.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 6<span>Day 11</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Approach Sequoia correctly</h3>
+          <div class="day-tags"><span class="pill route-pill">Highway 180</span><span class="pill place-pill">Kings Canyon</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Barstow/Bakersfield to Fresno/Grant Grove via Highway 180.</span></div>
+            <div class="detail"><b>Why</b><span>Highway 180 is the RV-sane approach; avoid the steeper southern 198 approach.</span></div>
+            <div class="detail"><b>Stop</b><span>Grant Grove if arrival is early; otherwise keep it a transfer day.</span></div>
+            <div class="detail"><b>Overnight</b><span>Fresno, Three Rivers only if RV route works, or Grant Grove-area campground.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">US-395 and Tioga Pass</h3>
+          <div class="day-tags"><span class="pill route-pill">US-395</span><span class="pill place-pill">Yosemite</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Lone Pine/Bishop to Lee Vining, Tioga Pass, Yosemite Valley if open.</span></div>
+            <div class="detail"><b>Why</b><span>One of the most scenic paved approaches in the West.</span></div>
+            <div class="detail"><b>Stop</b><span>Mono Lake, Tuolumne Meadows viewpoints, Tenaya Lake.</span></div>
+            <div class="detail"><b>Overnight</b><span>Yosemite-area campground, Lee Vining fallback, or Oakhurst if rerouting.</span></div>
+          </div>
+          <div class="choice warning">If Tioga closes, abandon this line and route around via Bakersfield/Fresno.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 7<span>Day 12</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Giant sequoia day</h3>
+          <div class="day-tags"><span class="pill place-pill">Sequoia trees</span><span class="pill hike-pill">Easy-medium hikes</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Short park shuttle/driving day.</span></div>
+            <div class="detail"><b>Why</b><span>This cleanly satisfies the California big-tree goal without Yosemite uncertainty.</span></div>
+            <div class="detail"><b>Hike</b><span>Grant Grove loop, Congress Trail, or Moro Rock if parking/shuttle works.</span></div>
+            <div class="detail"><b>Overnight</b><span>Fresno/Visalia/Bakersfield direction to shorten the LA drive.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Yosemite focus day</h3>
+          <div class="day-tags"><span class="pill place-pill">Yosemite</span><span class="pill hike-pill">Valley or sequoias</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Minimal driving inside Yosemite; use shuttles where possible.</span></div>
+            <div class="detail"><b>Why</b><span>Choose one strong Yosemite experience rather than overstuffing the day.</span></div>
+            <div class="detail"><b>Hike</b><span>Valley loop/Mist Trail section, or Mariposa Grove for giant sequoias.</span></div>
+            <div class="detail"><b>Overnight</b><span>Oakhurst/Mariposa/Fresno direction to make LA feasible next day.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 8<span>Day 13</span></div>
+        <div class="day-cell" data-option="Option A">
+          <h3 class="day-title">Finish in Los Angeles</h3>
+          <div class="day-tags"><span class="pill route-pill">Final transfer</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Central Valley/Sequoia area to Los Angeles.</span></div>
+            <div class="detail"><b>Why</b><span>Simple final day with margin for LA traffic and RV return logistics.</span></div>
+            <div class="detail"><b>Stop</b><span>Only quick food/fuel stops unless you have extra time.</span></div>
+            <div class="detail"><b>Overnight</b><span>Los Angeles destination.</span></div>
+          </div>
+        </div>
+        <div class="day-cell" data-option="Option B">
+          <h3 class="day-title">Finish in Los Angeles</h3>
+          <div class="day-tags"><span class="pill route-pill">Final transfer</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Yosemite/Oakhurst/Fresno area to Los Angeles.</span></div>
+            <div class="detail"><b>Why</b><span>Feasible, but traffic-sensitive and less forgiving than Option A.</span></div>
+            <div class="detail"><b>Stop</b><span>Keep the day simple; do not add a major park stop.</span></div>
+            <div class="detail"><b>Overnight</b><span>Los Angeles destination.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel timeline single-plan">
+      <div class="single-intro">
+        <div>
+          <span class="badge">New working plan</span>
+          <h2>South From Wendover: Lees Ferry, Grand Canyon, Yosemite</h2>
+          <p>This revision avoids the already-seen country south of Salt Lake City while restoring the strongest story order. It goes south from Wendover through Nevada basin-and-range country, cuts east from Cathedral Gorge to Lees Ferry for safe Colorado River bottom access, then Grand Canyon South Rim, old Route 66, Las Vegas, and Yosemite as the must-hit finish.</p>
+          <div class="legend">
+            <span class="pill place-pill">Base-camp focused</span>
+            <span class="pill route-pill">Longer transfer days</span>
+            <span class="pill hike-pill">Two serious nature days</span>
+          </div>
+        </div>
+        <a class="maplink" href="https://www.google.com/maps/dir/Salt+Lake+City,+UT/Bonneville+Salt+Flats+International+Speedway/Wendover,+UT/Ely,+NV/Great+Basin+National+Park/Cathedral+Gorge+State+Park/Cedar+City,+UT/Kanab,+UT/Lees+Ferry,+AZ/Desert+View+Watchtower/Grand+Canyon+Village,+AZ/Williams,+AZ/Seligman,+AZ/Kingman,+AZ/Oatman,+AZ/Topock,+AZ/Las+Vegas,+NV/Death+Valley+National+Park/Lone+Pine,+CA/Bishop,+CA/Lee+Vining,+CA/Yosemite+Valley,+CA/Mariposa+Grove,+Yosemite/Los+Angeles,+CA" target="_blank" rel="noreferrer">Open Refined Map</a>
+      </div>
+
+      <div class="base-strip">
+        <div class="base"><b>Wendover</b><span>1 night, salt-flat opener</span></div>
+        <div class="base"><b>Ely / Great Basin</b><span>2 nights, Nevada mountains</span></div>
+        <div class="base"><b>Lees Ferry</b><span>2 nights, river bottom</span></div>
+        <div class="base"><b>Grand Canyon</b><span>2 nights, rim + descent hike</span></div>
+        <div class="base"><b>Las Vegas</b><span>2 nights, Route 66 + service</span></div>
+        <div class="base"><b>Yosemite</b><span>2 nights, valley + sequoias</span></div>
+      </div>
+
+      <div class="timeline-head">
+        <div>Day</div>
+        <div>Refined Single Plan</div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 27<span>Day 1</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Salt Lake City to Bonneville and Wendover</h3>
+          <div class="day-tags"><span class="pill place-pill">Bonneville Salt Flats</span><span class="pill route-pill">Short first day</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>SLC to Bonneville Salt Flats, then Wendover.</span></div>
+            <div class="detail"><b>Why</b><span>Keep Bonneville as a dramatic opening image, not as a major destination. It is worth an hour, not a day.</span></div>
+            <div class="detail"><b>Activity</b><span>Walk/photo stop on the salt only if dry and officially accessible.</span></div>
+            <div class="detail"><b>Overnight</b><span>Wendover. This is the one unavoidable one-night camp caused by the salt-flat detour.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 28<span>Day 2</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">South from Wendover to Ely</h3>
+          <div class="day-tags"><span class="pill route-pill">US-93 / basin-and-range</span><span class="pill place-pill">Ely</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Wendover south through open Nevada basin-and-range country to Ely.</span></div>
+            <div class="detail"><b>Why</b><span>This avoids the already-seen southern-SLC corridor and gives the trip a true Great Basin leg.</span></div>
+            <div class="detail"><b>Stops</b><span>Keep this leisurely: wide desert pullouts, Ely murals, Nevada Northern Railway if timing works.</span></div>
+            <div class="detail"><b>Overnight</b><span>Ely or Great Basin-area campground/RV park. Night 1 of 2.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 29<span>Day 3</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Great Basin rest and mountain day</h3>
+          <div class="day-tags"><span class="pill place-pill">Great Basin</span><span class="pill hike-pill">Easy-medium hikes</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Stay based around Ely / Great Basin National Park.</span></div>
+            <div class="detail"><b>Why</b><span>This is the first real two-night base and a good decompression day before hotter desert country.</span></div>
+            <div class="detail"><b>Hike</b><span>Lehman Creek or alpine-area walks if open; Lehman Caves if tickets are available.</span></div>
+            <div class="detail"><b>Overnight</b><span>Same Ely / Great Basin base. Night 2 of 2.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 30<span>Day 4</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Cathedral Gorge, then east to Lees Ferry</h3>
+          <div class="day-tags"><span class="pill route-pill">NV-319 / UT-56 / US-89</span><span class="pill place-pill">Lees Ferry</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Ely / Great Basin to Cathedral Gorge, then east via Panaca, Cedar City, Kanab, US-89A, Navajo Bridge, and Lees Ferry.</span></div>
+            <div class="detail"><b>Why</b><span>This keeps the south-from-Wendover Nevada route while restoring the better order: river bottom before Grand Canyon rim.</span></div>
+            <div class="detail"><b>Stops</b><span>Cathedral Gorge slot-like formations, Cedar City/Kanab fuel and groceries, Navajo Bridge if daylight remains.</span></div>
+            <div class="detail"><b>Overnight</b><span>Lees Ferry / Marble Canyon / Page-area base. Night 1 of 2.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">May 31<span>Day 5</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Grand Canyon bottom experience at Lees Ferry</h3>
+          <div class="day-tags"><span class="pill place-pill">Colorado River</span><span class="pill hike-pill">Easy river day</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Stay local around Lees Ferry, Navajo Bridge, and Marble Canyon.</span></div>
+            <div class="detail"><b>Why</b><span>This is the safe, RV-friendly way to stand at Colorado River level without gambling on backcountry permits or dangerous June heat.</span></div>
+            <div class="detail"><b>Hike</b><span>Easy riverside walk; optional Cathedral Wash only if dry, cool enough, and the group is comfortable with scrambling.</span></div>
+            <div class="detail"><b>Overnight</b><span>Same Lees Ferry / Marble Canyon / Page-area base. Night 2 of 2.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 1<span>Day 6</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">River level to Grand Canyon South Rim</h3>
+          <div class="day-tags"><span class="pill route-pill">Desert View Drive</span><span class="pill place-pill">South Rim</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Lees Ferry / Marble Canyon to Desert View Watchtower, then Grand Canyon Village / Tusayan / Williams.</span></div>
+            <div class="detail"><b>Why</b><span>This is the best story sequence: river bottom first, then the rim looking down into the canyon system.</span></div>
+            <div class="detail"><b>Stops</b><span>Desert View, Lipan Point, Grandview Point, and rim viewpoints as parking allows.</span></div>
+            <div class="detail"><b>Overnight</b><span>Grand Canyon/Tusayan preferred; Williams fallback. Night 1 of 2.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 2<span>Day 7</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Big Grand Canyon descent hike</h3>
+          <div class="day-tags"><span class="pill hike-pill">South Kaibab</span><span class="pill place-pill">Inner canyon</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Minimal RV movement. Park early and use Grand Canyon shuttles.</span></div>
+            <div class="detail"><b>Why</b><span>This is the real in-canyon hike, kept as a standalone day rather than stacked onto transfer driving.</span></div>
+            <div class="detail"><b>Hike</b><span>South Kaibab to Cedar Ridge as the default; Skeleton Point only with dawn start, cool conditions, and strict turnaround discipline.</span></div>
+            <div class="detail"><b>Overnight</b><span>Same Grand Canyon/Tusayan/Williams base. Night 2 of 2.</span></div>
+          </div>
+          <div class="choice warning">Do not attempt rim-to-river-and-back in one day in June.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 3<span>Day 8</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Full Route 66 transfer to Las Vegas</h3>
+          <div class="day-tags"><span class="pill route-pill">Seligman-Kingman-Oatman-Topock</span><span class="pill place-pill">Old Route 66</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Grand Canyon/Williams to Seligman, Hackberry, Kingman, Sitgreaves Pass, Oatman, Topock, then Las Vegas / Lake Mead / Pahrump base.</span></div>
+            <div class="detail"><b>Why</b><span>This preserves the full authentic Route 66 experience after the Canyon, in the natural westbound direction.</span></div>
+            <div class="detail"><b>Stops</b><span>Seligman, Hackberry General Store, Cool Springs, Oatman. Keep stops short; this is an all-day scenic transfer.</span></div>
+            <div class="detail"><b>Overnight</b><span>Las Vegas / Lake Mead / Pahrump base. Night 1 of 2.</span></div>
+          </div>
+          <div class="choice warning">Sitgreaves Pass is paved but narrow and twisty. Drive it dry, early, slow, and with full attention.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 4<span>Day 9</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Las Vegas half-day and RV reset</h3>
+          <div class="day-tags"><span class="pill place-pill">Las Vegas</span><span class="pill hike-pill">Rest/service day</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Stay based near Las Vegas; avoid driving the RV through the Strip if rideshare/transit is practical.</span></div>
+            <div class="detail"><b>Why</b><span>Vegas stays exactly as requested: a contained half-day, plus laundry, tanks, groceries, and recovery.</span></div>
+            <div class="detail"><b>Activity</b><span>Pick one focused midday plan: Fremont, Strip/Bellagio walk, or Neon Museum if booked.</span></div>
+            <div class="detail"><b>Overnight</b><span>Same Las Vegas / Lake Mead / Pahrump base. Night 2 of 2.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 5<span>Day 10</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Long western transfer to the eastern Sierra</h3>
+          <div class="day-tags"><span class="pill route-pill">All-day drive</span><span class="pill place-pill">Death Valley / US-395</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Las Vegas / Pahrump through Death Valley viewpoints to Lone Pine or Bishop.</span></div>
+            <div class="detail"><b>Why</b><span>Uses the long-transfer model well: desert drama without pretending June is hiking season in Death Valley.</span></div>
+            <div class="detail"><b>Stops</b><span>Keep stops practical: fuel, food, shade. Death Valley viewpoints only if heat and timing are reasonable.</span></div>
+            <div class="detail"><b>Overnight</b><span>Lone Pine or Bishop. One-night positioning camp; hookups preferred after a long hot transfer.</span></div>
+          </div>
+          <div class="choice warning">This is the longest operational day. Start early and do not force Death Valley sightseeing if temperatures are punishing.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 6<span>Day 11</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">US-395, Mono Lake, Tioga Pass, Yosemite base</h3>
+          <div class="day-tags"><span class="pill route-pill">US-395 + Tioga</span><span class="pill place-pill">Yosemite</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Lone Pine/Bishop to Mono Lake, Lee Vining, Tioga Pass, Yosemite Valley/Oakhurst/Mariposa.</span></div>
+            <div class="detail"><b>Why</b><span>This is the iconic Sierra approach and sets up two Yosemite nights instead of rushing the park.</span></div>
+            <div class="detail"><b>Stops</b><span>Mono Lake tufas, Tenaya Lake, Tuolumne Meadows viewpoints if open and parking allows.</span></div>
+            <div class="detail"><b>Overnight</b><span>Yosemite-area base. Night 1 of 2.</span></div>
+          </div>
+          <div class="choice warning">If Tioga is closed, reroute south around the Sierra via Bakersfield/Fresno and use Oakhurst/Mariposa as the Yosemite base.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 7<span>Day 12</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Yosemite Valley or Mariposa Grove day</h3>
+          <div class="day-tags"><span class="pill place-pill">Yosemite</span><span class="pill hike-pill">Valley / sequoias</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Minimal RV movement. Use shuttles and commit to one focus.</span></div>
+            <div class="detail"><b>Why</b><span>Yosemite is a must, so this stays as a real park day rather than a drive-through.</span></div>
+            <div class="detail"><b>Hike</b><span>Choose Yosemite Valley hike day or Mariposa Grove giant sequoias. Do not try to do everything if traffic is heavy.</span></div>
+            <div class="detail"><b>Overnight</b><span>Same Yosemite-area base. Night 2 of 2.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="date-cell">June 8<span>Day 13</span></div>
+        <div class="day-cell">
+          <h3 class="day-title">Finish in Los Angeles</h3>
+          <div class="day-tags"><span class="pill route-pill">Final transfer</span><span class="pill place-pill">Los Angeles</span></div>
+          <div class="detail-grid">
+            <div class="detail"><b>Route</b><span>Yosemite/Oakhurst/Mariposa area to Los Angeles.</span></div>
+            <div class="detail"><b>Why</b><span>This is a longer final day, but it protects the two-night Yosemite stay and still lands in LA on June 8.</span></div>
+            <div class="detail"><b>Stops</b><span>Keep this operational: fuel, food, and arrival. No major new sightseeing unless LA timing is flexible.</span></div>
+            <div class="detail"><b>Overnight</b><span>Los Angeles destination.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="compare">
+      <div class="panel mini">
+        <h3>Drop Without Regret</h3>
+        <p>Redwood National Park, Chiricahua, Robbers Roost, and any one-day rim-to-river Grand Canyon plan.</p>
+      </div>
+      <div class="panel mini">
+        <h3>Conditional Keep</h3>
+        <p>Bonneville is worth keeping only if the idea excites you. It is a visual one-hour stop plus a routing penalty.</p>
+      </div>
+      <div class="panel mini">
+        <h3>Best Single Choice</h3>
+        <p>Option A. It gives the highest chance of a good trip with fewer weather, road, and RV constraints.</p>
+      </div>
+    </section>
+
+    <section class="panel note">
+      <h2>Operational Notes</h2>
+      <ul>
+        <li>Plan no-hookup nights in Nevada/Arizona desert sections; use developed campgrounds or towns for dump stations every 2-3 days.</li>
+        <li>Grand Canyon: do not move the RV around all day. Park early, then use shuttles.</li>
+        <li>Oatman/Sitgreaves Pass: paved and feasible for a mid-size Cruise America RV, but slow, twisty, and not a bad-weather road.</li>
+        <li>Sequoia: approach by Highway 180 from Fresno for RV sanity.</li>
+        <li>Yosemite: only choose Option B if Tioga Pass and current conditions cooperate.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
