@@ -331,13 +331,79 @@
       background: rgba(255, 250, 240, 0.68);
     }
 
+    .camp-section {
+      margin-top: 24px;
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .camp-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      padding: 24px 28px;
+      background:
+        linear-gradient(135deg, rgba(175, 79, 47, 0.12), transparent 46%),
+        rgba(255, 250, 240, 0.78);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .camp-head p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .transfer {
+      margin: 18px 18px 0;
+      border: 1px solid rgba(175, 79, 47, 0.22);
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(175, 79, 47, 0.07);
+    }
+
+    .transfer-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .transfer-title {
+      margin: 0;
+      color: var(--rust);
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .stat {
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: rgba(255, 250, 240, 0.74);
+      color: var(--ink);
+      font: 700 0.78rem/1 "Trebuchet MS", sans-serif;
+      border: 1px solid var(--line);
+    }
+
+    .transfer p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
     li {
       margin: 0.48rem 0;
     }
 
     @media (max-width: 860px) {
       .hero,
-      .base-strip {
+      .base-strip,
+      .camp-head,
+      .transfer-top {
         grid-template-columns: 1fr;
       }
 
@@ -356,6 +422,10 @@
 
       .date-cell {
         border-bottom: 1px solid var(--line);
+      }
+
+      .stats {
+        justify-content: flex-start;
       }
     }
   </style>
@@ -389,13 +459,25 @@
       <div class="base"><b>Yosemite</b><span>2 nights, valley + sequoias</span></div>
     </section>
 
-    <section class="panel timeline">
-      <div class="timeline-head">
-        <div>Day</div>
-        <div>Plan</div>
+    <section class="panel camp-section">
+      <div class="camp-head">
+        <div>
+          <span class="badge">Opening Position</span>
+          <h2>Wendover / Bonneville</h2>
+          <p>One-night opener because the salt flats are a worthwhile visual detour, but not a place to spend multiple days.</p>
+        </div>
+        <a class="maplink" href="https://www.google.com/maps/dir/Salt+Lake+City,+UT/Bonneville+Salt+Flats+International+Speedway/Wendover,+UT" target="_blank" rel="noreferrer">Segment Map</a>
+      </div>
+      <div class="transfer">
+        <div class="transfer-top">
+          <h3 class="transfer-title">Transfer: Salt Lake City to Wendover via Bonneville</h3>
+          <div class="stats"><span class="stat">~125 mi</span><span class="stat">~2 hr drive</span><span class="stat">Paved / easy</span></div>
+        </div>
+        <p>Short first day. Use the extra margin for groceries, water, propane, and checking salt-flat conditions.</p>
       </div>
 
-      <div class="day-row">
+      <div class="timeline">
+        <div class="day-row">
         <div class="date-cell">May 27<span>Day 1</span></div>
         <div class="day-cell">
           <h3 class="day-title">Salt Lake City to Bonneville and Wendover</h3>
@@ -414,8 +496,28 @@
           </div>
         </div>
       </div>
+      </div>
+    </section>
 
-      <div class="day-row">
+    <section class="panel camp-section">
+      <div class="camp-head">
+        <div>
+          <span class="badge">Base 1: 2 Nights</span>
+          <h2>Ely / Great Basin</h2>
+          <p>Two-night Nevada mountain base after going south from Wendover, avoiding the already-seen corridor south of Salt Lake City.</p>
+        </div>
+        <a class="maplink" href="https://www.google.com/maps/dir/Wendover,+UT/Ely,+NV/Great+Basin+National+Park/Ely,+NV" target="_blank" rel="noreferrer">Segment Map</a>
+      </div>
+      <div class="transfer">
+        <div class="transfer-top">
+          <h3 class="transfer-title">Transfer: Wendover to Ely</h3>
+          <div class="stats"><span class="stat">~190 mi</span><span class="stat">~3.5 hr drive</span><span class="stat">US-93 basin-and-range</span></div>
+        </div>
+        <p>Leisurely all-paved desert drive. Add time for pullouts and Ely stops.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="day-row">
         <div class="date-cell">May 28<span>Day 2</span></div>
         <div class="day-cell">
           <h3 class="day-title">South from Wendover to Ely</h3>
@@ -453,8 +555,28 @@
           </div>
         </div>
       </div>
+      </div>
+    </section>
 
-      <div class="day-row">
+    <section class="panel camp-section">
+      <div class="camp-head">
+        <div>
+          <span class="badge">Base 2: 2 Nights</span>
+          <h2>Lees Ferry / Marble Canyon</h2>
+          <p>The safe Colorado River “bottom” experience, reached by cutting east from Cathedral Gorge instead of dropping through Las Vegas first.</p>
+        </div>
+        <a class="maplink" href="https://www.google.com/maps/dir/Ely,+NV/Great+Basin+National+Park/Cathedral+Gorge+State+Park/Cedar+City,+UT/Kanab,+UT/Navajo+Bridge/Lees+Ferry,+AZ" target="_blank" rel="noreferrer">Segment Map</a>
+      </div>
+      <div class="transfer">
+        <div class="transfer-top">
+          <h3 class="transfer-title">Transfer: Ely / Great Basin to Lees Ferry via Cathedral Gorge</h3>
+          <div class="stats"><span class="stat">~430 mi</span><span class="stat">~7.5-8.5 hr drive</span><span class="stat">Long paved transfer</span></div>
+        </div>
+        <p>This is a full driving day. Cathedral Gorge is the scenic anchor; Cedar City/Kanab are practical fuel and grocery stops.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="day-row">
         <div class="date-cell">May 30<span>Day 4</span></div>
         <div class="day-cell">
           <h3 class="day-title">Cathedral Gorge, then east to Lees Ferry</h3>
@@ -494,8 +616,28 @@
           </div>
         </div>
       </div>
+      </div>
+    </section>
 
-      <div class="day-row">
+    <section class="panel camp-section">
+      <div class="camp-head">
+        <div>
+          <span class="badge">Base 3: 2 Nights</span>
+          <h2>Grand Canyon South Rim</h2>
+          <p>Top-view day plus one serious in-canyon hike, without trying to force an unsafe rim-to-river day in June.</p>
+        </div>
+        <a class="maplink" href="https://www.google.com/maps/dir/Lees+Ferry,+AZ/Desert+View+Watchtower/Grand+Canyon+Village,+AZ/Tusayan,+AZ/Williams,+AZ" target="_blank" rel="noreferrer">Segment Map</a>
+      </div>
+      <div class="transfer">
+        <div class="transfer-top">
+          <h3 class="transfer-title">Transfer: Lees Ferry to South Rim via Desert View</h3>
+          <div class="stats"><span class="stat">~140 mi</span><span class="stat">~2.5-3 hr drive</span><span class="stat">Scenic rim approach</span></div>
+        </div>
+        <p>Shorter transfer with excellent viewpoint stops. Arrive early enough to park the RV and switch to shuttles.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="day-row">
         <div class="date-cell">June 1<span>Day 6</span></div>
         <div class="day-cell">
           <h3 class="day-title">River level to Grand Canyon South Rim</h3>
@@ -535,8 +677,28 @@
           </div>
         </div>
       </div>
+      </div>
+    </section>
 
-      <div class="day-row">
+    <section class="panel camp-section">
+      <div class="camp-head">
+        <div>
+          <span class="badge">Base 4: 2 Nights</span>
+          <h2>Las Vegas / Lake Mead / Pahrump</h2>
+          <p>Route 66 transfer day into a two-night service base, with Las Vegas intentionally limited to a half-day.</p>
+        </div>
+        <a class="maplink" href="https://www.google.com/maps/dir/Grand+Canyon+Village,+AZ/Williams,+AZ/Seligman,+AZ/Hackberry+General+Store/Kingman,+AZ/Oatman,+AZ/Topock,+AZ/Las+Vegas,+NV" target="_blank" rel="noreferrer">Segment Map</a>
+      </div>
+      <div class="transfer">
+        <div class="transfer-top">
+          <h3 class="transfer-title">Transfer: Grand Canyon to Las Vegas via old Route 66</h3>
+          <div class="stats"><span class="stat">~390-430 mi</span><span class="stat">~7.5-9 hr drive</span><span class="stat">Slow Route 66 day</span></div>
+        </div>
+        <p>All-day scenic transfer. The Oatman/Sitgreaves Pass section is the memorable part and the RV-attention part.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="day-row">
         <div class="date-cell">June 3<span>Day 8</span></div>
         <div class="day-cell">
           <h3 class="day-title">Full Route 66 transfer to Las Vegas</h3>
@@ -578,8 +740,28 @@
           </div>
         </div>
       </div>
+      </div>
+    </section>
 
-      <div class="day-row">
+    <section class="panel camp-section">
+      <div class="camp-head">
+        <div>
+          <span class="badge">Positioning Night</span>
+          <h2>Eastern Sierra: Lone Pine or Bishop</h2>
+          <p>One-night staging stop that makes the Yosemite approach via US-395 and Tioga Pass work cleanly.</p>
+        </div>
+        <a class="maplink" href="https://www.google.com/maps/dir/Las+Vegas,+NV/Pahrump,+NV/Death+Valley+National+Park/Zabriskie+Point/Lone+Pine,+CA/Bishop,+CA" target="_blank" rel="noreferrer">Segment Map</a>
+      </div>
+      <div class="transfer">
+        <div class="transfer-top">
+          <h3 class="transfer-title">Transfer: Las Vegas to Lone Pine / Bishop via Death Valley</h3>
+          <div class="stats"><span class="stat">~260-315 mi</span><span class="stat">~5.5-7 hr drive</span><span class="stat">Heat-sensitive</span></div>
+        </div>
+        <p>Scenic desert transit, not a hiking day. Prefer hookups after the hot drive and keep Death Valley stops short.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="day-row">
         <div class="date-cell">June 5<span>Day 10</span></div>
         <div class="day-cell">
           <h3 class="day-title">Long western transfer to the eastern Sierra</h3>
@@ -600,8 +782,28 @@
           </div>
         </div>
       </div>
+      </div>
+    </section>
 
-      <div class="day-row">
+    <section class="panel camp-section">
+      <div class="camp-head">
+        <div>
+          <span class="badge">Base 5: 2 Nights</span>
+          <h2>Yosemite Area</h2>
+          <p>Two-night must-hit finish: Sierra approach, Yosemite Valley or Mariposa Grove, then Los Angeles on June 8.</p>
+        </div>
+        <a class="maplink" href="https://www.google.com/maps/dir/Bishop,+CA/Mono+Lake+Tufa+State+Natural+Reserve/Lee+Vining,+CA/Tioga+Pass/Tenaya+Lake/Yosemite+Valley,+CA/Mariposa+Grove,+Yosemite/Los+Angeles,+CA" target="_blank" rel="noreferrer">Segment Map</a>
+      </div>
+      <div class="transfer">
+        <div class="transfer-top">
+          <h3 class="transfer-title">Transfer: Eastern Sierra to Yosemite via US-395 and Tioga Pass</h3>
+          <div class="stats"><span class="stat">~150-220 mi</span><span class="stat">~4-5.5 hr drive</span><span class="stat">Tioga-dependent</span></div>
+        </div>
+        <p>One of the best paved scenic approaches in the West. If Tioga closes, use the west-side fallback via Bakersfield/Fresno.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="day-row">
         <div class="date-cell">June 6<span>Day 11</span></div>
         <div class="day-cell">
           <h3 class="day-title">US-395, Mono Lake, Tioga Pass, Yosemite base</h3>
@@ -644,6 +846,14 @@
         </div>
       </div>
 
+      <div class="transfer">
+        <div class="transfer-top">
+          <h3 class="transfer-title">Final Transfer: Yosemite area to Los Angeles</h3>
+          <div class="stats"><span class="stat">~300-330 mi</span><span class="stat">~6-7.5 hr drive</span><span class="stat">Traffic-sensitive</span></div>
+        </div>
+        <p>Keep this operational. Build in margin for LA traffic, fuel, cleaning, and RV return logistics.</p>
+      </div>
+
       <div class="day-row">
         <div class="date-cell">June 8<span>Day 13</span></div>
         <div class="day-cell">
@@ -661,6 +871,7 @@
             <a class="icon" href="https://maps.google.com/?q=Los+Angeles,+CA" target="_blank" rel="noreferrer">LA</a>
           </div>
         </div>
+      </div>
       </div>
     </section>
 
